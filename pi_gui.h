@@ -39,19 +39,37 @@
 
 #define METER_WIDTH 400
 #define METER_HEIGHT 100
-#define METER_POS_X 320
-#define METER_POS_Y 650
+#define METER_POS_X 120
+#define METER_POS_Y 500
 
 #define FREQ_WIDTH 400
 #define FREQ_HEIGHT 100
-//#define FREQ_POS_X IMAGE_WIDTH/2-FREQ_WIDTH/2
-#define FREQ_POS_X 320
+#define FREQ_POS_X 520
 #define FREQ_POS_Y 500
 
+#define AF_GAIN_WIDTH 400
+#define AF_GAIN_HEIGHT 50
+#define AF_GAIN_POS_X 100
+#define AF_GAIN_POS_Y 700
+
+#define RF_GAIN_WIDTH 400
+#define RF_GAIN_HEIGHT 50
+#define RF_GAIN_POS_X 570
+#define RF_GAIN_POS_Y 700
+
+#define SAMP_RATE_WIDTH 200
+#define SAMP_RATE_HEIGHT 300
+#define SAMP_RATE_POS_X 1060
+#define SAMP_RATE_POS_Y 50
+
+#define DEMOD_WIDTH 200
+#define DEMOD_HEIGHT 300
+#define DEMOD_POS_X 1060
+#define DEMOD_POS_Y 400
 
 
-#define BUTTON_WIDTH 110
-#define BUTTON_HEIGHT 110
+#define BUTTON_WIDTH 75
+#define BUTTON_HEIGHT 75
 #define BUTTON_POS_X 4
 #define BUTTON_POS_Y 2
 
@@ -88,12 +106,12 @@ int sz_x;
 int sz_y;
 int pos_x;
 int pos_y;
-}pixbuf,freq,panel,spec,finx,wfall,meter,button[100];
+}pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,button[100];
 
 void create_surface(surf_ptr);
 
 
-
+void make_layout();
 void set_image_pix(int,int,uint16_t);
 void xor_image_pix(int,int,uint16_t);
 uint16_t get_image_pix(int,int);

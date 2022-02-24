@@ -175,7 +175,7 @@ int hg,mh,mt,mu,kh,kt,ku,hh,ht,hu;
 
 //---
 
-void do_drawing()
+void setup_screen()
 {
 int i;
 int x,y;
@@ -183,75 +183,14 @@ int loc_x,loc_y;
 
 int dummy;
 
-//allocate image array
-pixbuf.data = malloc(IMAGE_WIDTH * IMAGE_HEIGHT * 2);
-pixbuf.sz_x=IMAGE_WIDTH;
-pixbuf.sz_y = IMAGE_HEIGHT;
+make_layout();
 
-//allocate surface arrays
-panel.data = malloc(PANEL_WIDTH * PANEL_HEIGHT * 2);
-panel.sz_x = PANEL_WIDTH;
-panel.sz_y = PANEL_HEIGHT;
+printf(" here %d \n",__LINE__);
 
-spec.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
-spec.sz_x = SPEC_WIDTH;
-spec.sz_y = SPEC_HEIGHT;
-
-finx.data = malloc(FINX_WIDTH * FINX_HEIGHT * 2);
-finx.sz_x = FINX_WIDTH;
-finx.sz_y = FINX_HEIGHT;
-
-wfall.data = malloc(WFALL_WIDTH * WFALL_HEIGHT * 2);
-wfall.sz_x = WFALL_WIDTH;
-wfall.sz_y = WFALL_HEIGHT;
-
-
-
-freq.data = malloc(FREQ_WIDTH * FREQ_HEIGHT * 2);
-freq.sz_x=FREQ_WIDTH;
-freq.sz_y = FREQ_HEIGHT;
-
-meter.data = malloc(METER_WIDTH * METER_HEIGHT * 2);
-meter.sz_x=METER_WIDTH;
-meter.sz_y = METER_HEIGHT;
-
-for(int bn=0;bn<16;bn++)
-    {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
-    }
-
-//fill image backround
-for(int i = 0 ;i<screensize;i++) 
-	pixbuf.data[i] = rgb565(0x03,0x0f,0x03); 
-
-//fill panel backround
-fill_surface(&panel,rgb565(0x04,0x02,0x0f));
-
-//fill spec backround
-fill_surface(&spec,rgb565(0x0f,0x03,0x01)); 
-
-//fill finx backround
-fill_surface(&finx,rgb565(0x0f,0x03,0x0f)); 
-
-//fill wfall backround
-fill_surface(&wfall,rgb565(0x00,0x0f,0x0f)); 
-
-//fill_surface(&spec,DARK_GREEN); 
-fill_surface(&freq,rgb565(0x03,0x03,0x03)); 
-
-//fill meter backround
-fill_surface(&meter,rgb565(0x00,0x02,0x06)); 
-
-
-for(int bn=0;bn<6;bn++)
-    fill_surface(&button[bn],rgb565(0x06,0x0,0x06));
- 
 refresh_screen();
 
 //draw various shapes to test
-plot_rectangle(&pixbuf,630,400,10,10,WHITE);
+//plot_rectangle(&pixbuf,630,400,10,10,WHITE);
 
 /*
 plot_large_string(&panel,50,50,"PANEL",WHITE);
@@ -278,21 +217,7 @@ loc_y = 0;
 copy_surface_to_image(&panel,loc_x,loc_y);
 */
 
-refresh_screen();
-
-//copy spec to pixbuf
-loc_x = SPEC_POS_X;
-loc_y = SPEC_POS_Y;
-plot_large_string(&spec,10,150,"Spectrum",WHITE);
-copy_surface_to_image(&spec,loc_x,loc_y);
-
-
-copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
-
-
-copy_surface_to_image(&wfall,WFALL_POS_X,WFALL_POS_Y);
-
-
+return;
 
 
 refresh_screen();
@@ -311,32 +236,13 @@ copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
 
 
-plot_large_string(&button[0],10,20,"ALPHA",WHITE);
-plot_large_string(&button[1],10,20,"BRAVO",WHITE);
-plot_large_string(&button[2],10,15,"CHARLY",WHITE);
-plot_large_string(&button[3],10,30,"DELTA",WHITE);
-
-for(int bn=0;bn<6;bn++)
-    {
-  copy_surface_to_image(&button[bn],BUTTON_POS_X+1160,BUTTON_POS_Y+(bn*BUTTON_WIDTH)+20*bn);
-    plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
-    }
-    
-//for(int bn=0;bn<6;bn++)
-//  copy_surface_to_image(&button[bn],BUTTON_POS_X+1160,BUTTON_POS_Y+(bn*BUTTON_WIDTH)+20*bn);
 
 refresh_screen();
 
-clock_gettime(CLOCK_REALTIME, &start);
-
-//printmable();
-
-refresh_screen();
-
-sleep(4);
+//sleep(4);
 
 
-
+/*
 //animation test
 for(int test=0;test<200;test++)
     {
@@ -357,9 +263,7 @@ for(int test=0;test<200;test++)
     copy_surface_to_image(&spec,loc_x,loc_y);
     refresh_screen();
     } 
-
-
-show_time();
+*/
 
 refresh_screen();
 //ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
@@ -400,7 +304,7 @@ image = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0
 if ((int)image == -1) 
 	    printf("Failed to mmap.\n");
 	
-do_drawing();
+setup_screen();
 
 printf(" Looping and sleeping%d \n",__LINE__);
 while(1) sleep(1);
