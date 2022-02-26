@@ -71,6 +71,8 @@
 #define DEMOD_POS_X 1060
 #define DEMOD_POS_Y 400
 
+#define ACTIVE_WIDTH 32
+#define ACTIVE_HEIGHT 140
 
 #define BUTTON_WIDTH 70
 #define BUTTON_HEIGHT 50
@@ -110,7 +112,7 @@ int sz_x;
 int sz_y;
 int pos_x;
 int pos_y;
-}pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,button[100];
+}pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,active,button[100];
 
 void create_surface(surf_ptr);
 void clear_screen(uint16_t);

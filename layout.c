@@ -6,13 +6,67 @@
 #include <pthread.h>
 #include "pi_gui.h"
 #include "tslib.h"
+#include "math.h"
 #include <locale.h>
 
+char digit_display[10];
+
+//---
+
+void set_active_digit(int d_act)
+{
+fill_surface(&active,rgb565(0x07,0x00,0x00)); 
+copy_surface_to_image(&active,FREQ_POS_X+128,FREQ_POS_Y);
+
+}
+
+
+void plot_freq_digits()
+{
+int dg,dd;
+dd=0;
+
+fill_surface(&freq,rgb565(0x00,0x00,0x00)); 
+set_active_digit(2);
+
+for(dg=11;dg>8;dg--,dd++)
+    {
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    }
+plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);//8
+dg--;
+
+for(;dg>4;dg--,dd++)
+    {
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    }
+
+plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
+dg--;
+
+for(;dg>0;dg--,dd++)
+    {
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    }
+copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+}
+
+//---
+
+void set_freq_disp(int d_freq)
+{
+for(int n = 0; n<10;n++)
+    {
+    digit_display[n]=(d_freq%10) +0x30;
+    d_freq/=10;
+    }
+plot_freq_digits();
+}
 
 
 
 
-
+//---
 
 void make_layout()
 {
@@ -51,6 +105,11 @@ samp_rate.data = malloc(SAMP_RATE_WIDTH * SAMP_RATE_HEIGHT * 2);
 samp_rate.sz_x=SAMP_RATE_WIDTH;
 samp_rate.sz_y = SAMP_RATE_HEIGHT;
 
+
+active.data = malloc(ACTIVE_WIDTH * ACTIVE_HEIGHT * 2);
+active.sz_x=ACTIVE_WIDTH;
+active.sz_y = ACTIVE_HEIGHT;
+
 af_gain.data = malloc(AF_GAIN_WIDTH * AF_GAIN_HEIGHT * 2);
 af_gain.sz_x=AF_GAIN_WIDTH;
 af_gain.sz_y = AF_GAIN_HEIGHT;
@@ -75,7 +134,24 @@ fill_surface(&freq,rgb565(0x07,0x00,0x00));
 //fill meter backround
 fill_surface(&meter,rgb565(0x00,0x00,0x07)); 
 
-plot_huge_numeral(&freq,32,40,'1',WHITE);
+
+
+digit_display[0] = '9';
+digit_display[1] = '8';
+digit_display[2] = '7';
+digit_display[3] = '6';
+digit_display[4] = '5';
+digit_display[5] = '4';
+digit_display[6] = '3';
+digit_display[7] = '2';
+digit_display[8] = '1';
+
+
+plot_freq_digits();
+
+
+/*
+plot_huge_numeral(&freq,32,40,0x36,WHITE);
 plot_huge_numeral(&freq,64,40,'4',WHITE);
 plot_huge_numeral(&freq,96,40,'5',WHITE);
 plot_huge_numeral(&freq,128,40,':',WHITE);
@@ -86,7 +162,7 @@ plot_huge_numeral(&freq,256,40,':',WHITE);
 plot_huge_numeral(&freq,288,40,'0',WHITE);
 plot_huge_numeral(&freq,320,40,'0',WHITE);
 plot_huge_numeral(&freq,352,40,'0',WHITE);
-
+*/
 
 
 copy_surface_to_image(&spec,SPEC_POS_X,SPEC_POS_Y);
@@ -146,14 +222,6 @@ for(int bn=4;bn<8;bn++,bb++)
   copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 20+(bb*BUTTON_WIDTH)+1*bb);
   plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
     }
-
-
-
-
-
-
-
-
 
 
 
@@ -219,8 +287,19 @@ loc_y = 0;
 copy_surface_to_image(&panel,loc_x,loc_y);
 */
 
-refresh_screen();
 
+
+int demo;
+demo = 10000000;
+set_freq_disp(demo);
+while(0)
+{
+usleep(100000);
+set_freq_disp(demo);//
+demo --;
+
+refresh_screen();
+}
 
 /*
 //Make buttons -----------------------------------
