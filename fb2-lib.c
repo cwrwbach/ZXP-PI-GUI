@@ -31,6 +31,8 @@ cs_dest->sz_y = PANEL_HEIGHT;
 }
 
 
+
+
 uint16_t get_image_pix(int x,int y)
 {
 uint16_t pixval;
@@ -41,6 +43,12 @@ if(y>IMAGE_HEIGHT-1) IMAGE_HEIGHT-1;
 pixval = image[x+y*IMAGE_WIDTH];
 
 return pixval;
+}
+
+void clear_screen(uint16_t pixval)
+{
+for(int p=0;p<(1280*800);p++)
+    image[p] = pixval;
 }
 
 

@@ -303,6 +303,10 @@ printf(" \n screensize=%d shorts\n",screensize);
 image = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
 if ((int)image == -1) 
 	    printf("Failed to mmap.\n");
+
+
+clear_screen(31);
+sleep(1);
 	
 setup_screen();
 

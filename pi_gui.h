@@ -11,14 +11,18 @@
 #include "fb2-colours.h"
 
 
+#define PPDIV 10
+
 
 #define IMAGE_WIDTH 1280
 #define IMAGE_HEIGHT 800
 
-#define PANEL_WIDTH 1032
-#define PANEL_HEIGHT 768
-#define PANEL_POS_X 128
-#define PANEL_POS_Y 0
+
+
+//#define PANEL_WIDTH 1032
+//#define PANEL_HEIGHT 768
+//#define PANEL_POS_X 128
+//#define PANEL_POS_Y 0
 
 #define SPEC_WIDTH 1032
 #define SPEC_HEIGHT 200
@@ -39,12 +43,12 @@
 
 #define METER_WIDTH 400
 #define METER_HEIGHT 100
-#define METER_POS_X 120
+#define METER_POS_X 80
 #define METER_POS_Y 500
 
 #define FREQ_WIDTH 400
 #define FREQ_HEIGHT 100
-#define FREQ_POS_X 520
+#define FREQ_POS_X 600
 #define FREQ_POS_Y 500
 
 #define AF_GAIN_WIDTH 400
@@ -68,8 +72,8 @@
 #define DEMOD_POS_Y 400
 
 
-#define BUTTON_WIDTH 75
-#define BUTTON_HEIGHT 75
+#define BUTTON_WIDTH 70
+#define BUTTON_HEIGHT 50
 #define BUTTON_POS_X 4
 #define BUTTON_POS_Y 2
 
@@ -109,7 +113,7 @@ int pos_y;
 }pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,button[100];
 
 void create_surface(surf_ptr);
-
+void clear_screen(uint16_t);
 
 void make_layout();
 void set_image_pix(int,int,uint16_t);
