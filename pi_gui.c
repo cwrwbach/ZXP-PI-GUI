@@ -300,8 +300,8 @@ screenbytes = finfo.smem_len;
 screensize=screenbytes/2; //2bytes per pixel
 printf(" \n screensize=%d shorts\n",screensize);
 
-image = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
-if ((int)image == -1) 
+frame_buf = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
+if ((int)frame_buf == -1) 
 	    printf("Failed to mmap.\n");
 
 
@@ -315,7 +315,7 @@ while(1) sleep(1);
 
 printf("\n ALL done, cleaning up \n");
 // cleanup
-munmap(image, screensize);
+munmap(frame_buf, screensize);
 close(fbfd);
 printf("    DONE     \n");
 return 0;

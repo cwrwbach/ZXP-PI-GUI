@@ -90,7 +90,7 @@
 typedef struct surface  * surf_ptr;
 
 int fbfd; // framebuffer file descriptor
-short *image;
+short * frame_buf;
 struct fb_fix_screeninfo finfo;
 long int screensize ;
 struct timespec start;
@@ -112,9 +112,13 @@ int sz_x;
 int sz_y;
 int pos_x;
 int pos_y;
-}pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,active,button[100];
+uint16_t backround_col;
+uint16_t border_col;
+uint16_t text_col;
+char text[40];
+}pixbuf,freq,spec,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,active;
 
-void create_surface(surf_ptr);
+void create_surface(struct surface *);
 void clear_screen(uint16_t);
 
 void make_layout();
@@ -130,13 +134,16 @@ void plot_large_character(struct surface * , int , int ,uint8_t,uint16_t );
 void plot_large_string(struct surface * , int , int ,uint8_t * ,uint16_t );
 
 void plot_thick_line (struct surface *, int, int , int , int,uint16_t );
-void plot_thick_rectangle(surf_ptr , int, int,int , int ,int , uint16_t );
+void plot_thick_rectangle(struct surface * , int, int,int , int ,int , uint16_t );
 void plot_huge_numeral(struct surface * , int, int ,uint8_t ,uint16_t);
 
 void plot_rectangle(struct surface * , int, int, int , int , uint16_t );
 void copy_surface_to_image(struct surface *,int,int);
 void refresh_screen();
 void fill_surface(struct surface *,uint16_t);
+void plot_button(struct surface *,int,int,int,int,uint16_t,uint16_t,uint16_t,char *);
+
+
 void show_time();
 
 

@@ -10,6 +10,7 @@
 #include <locale.h>
 
 char digit_display[10];
+struct surface button[100];
 
 //---
 
@@ -19,7 +20,6 @@ fill_surface(&active,rgb565(0x07,0x00,0x00));
 copy_surface_to_image(&active,FREQ_POS_X+128,FREQ_POS_Y);
 
 }
-
 
 void plot_freq_digits()
 {
@@ -62,9 +62,6 @@ for(int n = 0; n<10;n++)
     }
 plot_freq_digits();
 }
-
-
-
 
 //---
 
@@ -134,8 +131,6 @@ fill_surface(&freq,rgb565(0x07,0x00,0x00));
 //fill meter backround
 fill_surface(&meter,rgb565(0x00,0x00,0x07)); 
 
-
-
 digit_display[0] = '9';
 digit_display[1] = '8';
 digit_display[2] = '7';
@@ -148,22 +143,6 @@ digit_display[8] = '1';
 
 
 plot_freq_digits();
-
-
-/*
-plot_huge_numeral(&freq,32,40,0x36,WHITE);
-plot_huge_numeral(&freq,64,40,'4',WHITE);
-plot_huge_numeral(&freq,96,40,'5',WHITE);
-plot_huge_numeral(&freq,128,40,':',WHITE);
-plot_huge_numeral(&freq,160,40,'6',WHITE);
-plot_huge_numeral(&freq,192,40,'5',WHITE);
-plot_huge_numeral(&freq,224,40,'0',WHITE);
-plot_huge_numeral(&freq,256,40,':',WHITE);
-plot_huge_numeral(&freq,288,40,'0',WHITE);
-plot_huge_numeral(&freq,320,40,'0',WHITE);
-plot_huge_numeral(&freq,352,40,'0',WHITE);
-*/
-
 
 copy_surface_to_image(&spec,SPEC_POS_X,SPEC_POS_Y);
 copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
@@ -195,12 +174,11 @@ plot_large_string(&button[3],10,20,"NFM",WHITE);
 
 for(int bn=0;bn<4;bn++)
     {
-  copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 500+(bn*BUTTON_WIDTH)+1*bn);
+    copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 500+(bn*BUTTON_WIDTH)+1*bn);
     plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
     }
 
 //Make SAMPLE buttons
-
 for(int bn=4; bn<8;bn++)
     {
     button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
@@ -216,12 +194,38 @@ plot_large_string(&button[5],10,20,"SR2",WHITE);
 plot_large_string(&button[6],10,20,"SR3",WHITE);
 plot_large_string(&button[7],10,20,"SR4",WHITE);
 
+plot_button(&button[7],10,20,BUTTON_WIDTH,BUTTON_HEIGHT,C_BLUE,C_RED,C_WHITE,"ABC");
+
+
 int bb=0;
 for(int bn=4;bn<8;bn++,bb++)
     {
   copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 20+(bb*BUTTON_WIDTH)+1*bb);
   plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
     }
+
+
+
+
+
+
+refresh_screen();
+
+
+int demo;
+demo = 10000000;
+set_freq_disp(demo);
+
+while(0)
+    {
+    usleep(100000);
+    set_freq_disp(demo);//
+    demo --;
+    refresh_screen();
+    }
+
+} //make layout
+
 
 
 
@@ -257,8 +261,6 @@ for(int bn=0;bn<6;bn++)
 
 */
 
-refresh_screen();
-
 //draw various shapes to test
 //plot_rectangle(&pixbuf,630,400,10,10,WHITE);
 
@@ -289,18 +291,21 @@ copy_surface_to_image(&panel,loc_x,loc_y);
 
 
 
-int demo;
-demo = 10000000;
-set_freq_disp(demo);
-while(0)
-{
-usleep(100000);
-set_freq_disp(demo);//
-demo --;
 
-refresh_screen();
-}
 
+/*
+plot_huge_numeral(&freq,32,40,0x36,WHITE);
+plot_huge_numeral(&freq,64,40,'4',WHITE);
+plot_huge_numeral(&freq,96,40,'5',WHITE);
+plot_huge_numeral(&freq,128,40,':',WHITE);
+plot_huge_numeral(&freq,160,40,'6',WHITE);
+plot_huge_numeral(&freq,192,40,'5',WHITE);
+plot_huge_numeral(&freq,224,40,'0',WHITE);
+plot_huge_numeral(&freq,256,40,':',WHITE);
+plot_huge_numeral(&freq,288,40,'0',WHITE);
+plot_huge_numeral(&freq,320,40,'0',WHITE);
+plot_huge_numeral(&freq,352,40,'0',WHITE);
+*/
 /*
 //Make buttons -----------------------------------
 for(int bn=0;bn<16;bn++)
@@ -325,7 +330,3 @@ for(int bn=0;bn<6;bn++)
     fill_surface(&button[bn],rgb565(0x06,0x0,0x06));
 //end buttons -----------------------------------    
 */
-
-
-
-}

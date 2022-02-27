@@ -6,11 +6,7 @@
 #define VERTICAL 1
 
 
-typedef struct surface  * surf_ptr;
-
-
-
-extern short * image;
+extern short * frame_buf;
 extern int screensize;
 
 
@@ -23,7 +19,7 @@ int pos_x;
 int pos_y;
 }pixbuf;
 
-void create_surface(surf_ptr cs_dest)
+void create_surface(struct surface * cs_dest)
 {
 cs_dest->data = malloc(PANEL_WIDTH * PANEL_HEIGHT * 2);
 cs_dest->sz_x=PANEL_WIDTH;
@@ -40,7 +36,7 @@ if(x<0) x=1;
 if(x > IMAGE_WIDTH-1) x=IMAGE_WIDTH;
 if(y<0) y=0;
 if(y>IMAGE_HEIGHT-1) IMAGE_HEIGHT-1;
-pixval = image[x+y*IMAGE_WIDTH];
+pixval = frame_buf[x+y*IMAGE_WIDTH];
 
 return pixval;
 }
@@ -48,7 +44,7 @@ return pixval;
 void clear_screen(uint16_t pixval)
 {
 for(int p=0;p<(1280*800);p++)
-    image[p] = pixval;
+    frame_buf[p] = pixval;
 }
 
 
@@ -58,8 +54,7 @@ if(x<0) x=1;
 if(x > IMAGE_WIDTH-1) x=IMAGE_WIDTH;
 if(y<0) y=0;
 if(y>IMAGE_HEIGHT-1) IMAGE_HEIGHT-1;
-
-image[x+y*IMAGE_WIDTH] = pixval;
+frame_buf[x+y*IMAGE_WIDTH] = pixval;
 }
 
 void xor_image_pix(int x,int y,uint16_t pixval)
@@ -68,8 +63,7 @@ if(x<0) x=1;
 if(x > IMAGE_WIDTH-1) x=IMAGE_WIDTH;
 if(y<0) y=0;
 if(y>IMAGE_HEIGHT-1) IMAGE_HEIGHT-1;
-
-image[x+y*IMAGE_WIDTH] ^= pixval;
+frame_buf[x+y*IMAGE_WIDTH] ^= pixval;
 }
 
 void setPixel(struct surface * dest, int x, int y, uint16_t colour)
@@ -92,7 +86,7 @@ dest->data[location] = colour;
 void refresh_screen()
 {
 //always copies from "pixbuf" to the FrameBuffer "image"
-memcpy(image,pixbuf.data,screensize*2); //memcopy works in bytes
+memcpy(frame_buf,pixbuf.data,screensize*2); //memcopy works in bytes
 }
 
 void copy_surface_to_image(struct surface * surf,int loc_x,int loc_y)
@@ -149,7 +143,7 @@ setPixel (dest,x0+1,y0+1,colour);
 }
 
 
-void plot_circle (surf_ptr dest, int xm, int ym, int r,uint16_t colour)
+void plot_circle (struct surface * dest, int xm, int ym, int r,uint16_t colour)
 {
 int sz_x,sz_y;
 sz_x = dest->sz_x;
@@ -167,7 +161,7 @@ sz_y = dest->sz_y;
    } while (x < 0);
 }
 
-void plot_rectangle(surf_ptr dest, int x0, int y0,int sz_x, int sz_y, uint16_t colour)
+void plot_rectangle(struct surface * dest, int x0, int y0,int sz_x, int sz_y, uint16_t colour)
 {
 plot_line(dest, x0, y0, x0+sz_x, y0,colour);
 plot_line(dest, x0, y0+sz_y, x0+sz_x, y0+sz_y,colour);
@@ -175,7 +169,7 @@ plot_line(dest, x0, y0, x0, y0+sz_y,colour);
 plot_line(dest, x0+sz_x, y0, x0+sz_x, y0+sz_y,colour);
 }
 
-void plot_thick_rectangle(surf_ptr dest, int x0, int y0,int sz_x, int sz_y,int thickness, uint16_t colour)
+void plot_thick_rectangle(struct surface * dest, int x0, int y0,int sz_x, int sz_y,int thickness, uint16_t colour)
 {
 for(int n=0 ; n<thickness;n++)
     {
@@ -186,6 +180,18 @@ plot_thick_line(dest, x0+sz_x, y0, x0+sz_x, y0+sz_y,colour);
     
     }
 }
+
+void plot_button(struct surface  * dest,int x0,int y0,int sz_x, int sz_y,uint16_t backround_col,uint16_t border_col,uint16_t text_col,char text[40])
+{
+ 
+fill_surface(dest,backround_col);
+plot_rectangle(dest,0,0,sz_x,sz_y,border_col);
+plot_large_string(dest,10,20,text,text_col);
+
+}
+
+
+
 
 void plot_small_character(struct surface * dest, int x, int y,uint8_t char_num,uint16_t colour)
 {

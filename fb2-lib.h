@@ -199,7 +199,7 @@ float usec;
 
 void plot_circle (struct surface *dest, int xm, int ym, int r,uint16_t colour);
 
-
+void plot_large_string(struct surface * dest, int x, int y,uint8_t * string ,uint16_t colour);
 
 void setPixel(struct surface * dest,int x,int y,uint16_t colour);
 
