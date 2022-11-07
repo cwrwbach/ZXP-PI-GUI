@@ -258,7 +258,7 @@ for(int test=0;test<10000;test++)
 
 yyy=fft_video_buf[iii];
 
-printf("VID %d \n",yyy);
+//printf("VID %d \n",yyy);
 
      //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
         plot_line(&spec,iii,255,iii,yyy+5,BLUE);

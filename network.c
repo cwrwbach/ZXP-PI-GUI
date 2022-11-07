@@ -6,6 +6,7 @@
 #include <netdb.h> 
 #include <pthread.h>
 #include <liquid.h>
+#include <alsa/asoundlib.h>
 
 
 #define FREQ 4
@@ -40,20 +41,21 @@
 #define IQ_LEN PACK_LEN+IQ_HEAD_LEN
 
 #define G711_LEN PAK_LEN+G711_HEAD_LEN
-
-
-
+#define SIGN_BIT (0x80)  /* Sign bit for a A-law byte. */
+#define QUANT_MASK (0xf) /* Quantization field mask. */
+#define SEG_SHIFT (4)    /* Left shift for segment number. */
+#define SEG_MASK (0x70)  /* Segment field mask. */
 
 //------------------------------------------
 //int sock_fd;
 
 char in_pak_buf[MAX_PAK_LEN];
 char fft_video_buf[FFT_SIZE];
-short g711_xfer_buf[G711_SIZE];
+//short g711_xfer_buf[G711_SIZE];
 
 
-//int g_audio_sample_rate;
-//int g_sample_rate;
+int g_audio_sample_rate;
+int g_sample_rate;
 int g_fft_size;
 int g_center_frequency;
 
@@ -67,7 +69,7 @@ bool audio_flag;
 
 extern double centerFreqVal;
 static char *alsa_device = "default";  
-//snd_pcm_t *audio_device;
+snd_pcm_t *audio_device;
 short audio_buffer[2048];
 
 int control_packet[32];
@@ -101,6 +103,53 @@ void die(char *s)
 	exit(1);
 }
 
+int alaw2linear(unsigned char a_val)
+{
+    int t;
+    int seg;
+
+    a_val ^= 0x55;
+
+    t = (a_val & QUANT_MASK) << 4;
+    seg = ((unsigned)a_val & SEG_MASK) >> SEG_SHIFT;
+    switch (seg) {
+    case 0:
+        t += 8;
+        break;
+    case 1:
+        t += 0x108;
+        break;
+    default:
+        t += 0x108;
+        t <<= seg - 1;
+    }
+    return ((a_val & SIGN_BIT) ? t : -t);
+}
+
+
+
+void * do_audio_pak(void)
+{
+int ttt;
+while(1)
+    {
+//for(ttt=0;ttt<1024;ttt++)
+//    g711_xfer_buf[ttt] = ttt;
+
+    usleep(1000);
+    if(audio_flag ==true)
+        { //printf(" *\n");
+        audio_flag = false;
+        int snd_err = snd_pcm_writei(audio_device, g711_xfer_buf, 1024);	
+        if(snd_err < 0 )
+        {      
+            printf(" Under run \n");
+            snd_pcm_recover(audio_device, snd_err, 1); //catch underruns (silent flag set)
+            usleep(1000);
+            }
+        }
+    }
+}
 
 void * server_callback(void)
 {
@@ -134,10 +183,14 @@ while(1)
            
         case G711_LEN:
 
-      //  for(int i=0 ;i<1024;i++)
-       //     {
-        //    g711_xfer_buf[i] = alaw2linear(in_pak_buf[i]);
-        //    }
+        for(int i=0 ;i<1024;i++)
+            {
+            g711_xfer_buf[i] = alaw2linear(in_pak_buf[i]);
+
+            }
+
+
+
 
 c4.ccc[0] = in_pak_buf[1030];
 c4.ccc[1] = in_pak_buf[1031];
@@ -199,20 +252,20 @@ int  freq;
 
 //read_conf();
 
-//g_sample_rate = 500000;
+g_sample_rate = 8000;
 g_fft_size = FFT_SIZE;
 
 freq = 198000;
 //audio_flag = false;
-//audio_sr = g_audio_sample_rate;
-//audio_sr_delta = AR_DELTA; //correction to let audio run a tad slower to keep its buffer filled.
+audio_sr = 8000; //g_audio_sample_rate;
+audio_sr_delta = AR_DELTA; //correction to let audio run a tad slower to keep its buffer filled.
 
-//err = snd_pcm_open(&audio_device, alsa_device, SND_PCM_STREAM_PLAYBACK, 0);
-//if(err !=0)
- //   printf("Error opening Sound Device\n");
-//err = snd_pcm_set_params(audio_device,SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,1,audio_sr,1,400000); //latency in uS - Could be dynamic to reduce (unwanted) latency?, 400 ok, 200 ng.
-//if(err !=0)
- //   printf("Error with Audio parameters\n"); //audio 
+err = snd_pcm_open(&audio_device, alsa_device, SND_PCM_STREAM_PLAYBACK, 0);
+if(err !=0)
+   printf("Error opening Sound Device\n");
+err = snd_pcm_set_params(audio_device,SND_PCM_FORMAT_S16_LE, SND_PCM_ACCESS_RW_INTERLEAVED,1,audio_sr,1,400000); //latency in uS - Could be dynamic to reduce (unwanted) latency?, 400 ok, 200 ng.
+if(err !=0)
+   printf("Error with Audio parameters\n"); //audio 
 
 setup_network();
 printf(" Network started \n");
@@ -221,7 +274,7 @@ usleep(10000);
 //Create a callback thread
 ret=pthread_create(&callback_id,NULL, (void *) server_callback,NULL);
 
-//ret=pthread_create(&audio_cb_id,NULL, (void *)do_audio_pak,NULL);
+ret=pthread_create(&audio_cb_id,NULL, (void *)do_audio_pak,NULL);
 
 if(ret==0)
 	printf("Network Thread created successfully.\n");
