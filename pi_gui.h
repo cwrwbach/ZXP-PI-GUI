@@ -25,7 +25,7 @@
 //#define PANEL_POS_Y 0
 
 #define SPEC_WIDTH 1032
-#define SPEC_HEIGHT 200
+#define SPEC_HEIGHT 256
 #define SPEC_POS_X 10
 #define SPEC_POS_Y 10
 

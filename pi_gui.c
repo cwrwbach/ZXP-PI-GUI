@@ -4,9 +4,11 @@
 #include <stdio.h>
 #include <signal.h>
 #include <pthread.h>
+#include <locale.h>
+
 #include "pi_gui.h"
 #include "tslib.h"
-#include <locale.h>
+#include "network.c"
 
 #define SAMPLE_AMOUNT 2
 
@@ -28,6 +30,9 @@ int n, shuttle;
 char dev_name[256];
 typedef struct input_event EV;
 
+//===
+
+extern char fft_video_buf[FFT_SIZE];
 
 EV ev;
 
@@ -170,7 +175,6 @@ int hg,mh,mt,mu,kh,kt,ku,hh,ht,hu;
 
 //put_big_digit(freq, herz/1 
 
-
 }
 
 //---
@@ -217,7 +221,7 @@ loc_y = 0;
 copy_surface_to_image(&panel,loc_x,loc_y);
 */
 
-return;
+//return;
 
 
 refresh_screen();
@@ -227,43 +231,44 @@ copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
 
 plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
 
-
 //plot_large_string(&freq,50,50,"0,145.707.289",WHITE);
 
 plot_huge_numeral(&freq,50,50,'7',WHITE);
 
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
-
-
-
 refresh_screen();
 
 //sleep(4);
 
-
-/*
+loc_x=20;
+loc_y=200;
 //animation test
-for(int test=0;test<200;test++)
+
+for(int test=0;test<10000;test++)
     {
     fill_surface(&spec,rgb565(0x01,0x07,0x01));
- 
     int yyy;
     //start animation
-    for(int iii =0; iii<1024;iii+=1)
+    for(int iii =32; iii<1000;iii+=1)
         {
-        yyy = random()%100;
-        plot_line(&spec,iii,200,iii,200-yyy,WHITE);
-        //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
+
+ //      yyy = random()%100;
+
+yyy=fft_video_buf[iii];
+
+printf("VID %d \n",yyy);
+
+        plot_line(&spec,iii,255,iii,yyy,WHITE);
+      //  plot_line(&spec,iii,0,iii,200-yyy,WHITE);
         //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
         }
-
-    usleep(200*mS);
+ //   usleep(200*mS);
     ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
     copy_surface_to_image(&spec,loc_x,loc_y);
     refresh_screen();
     } 
-*/
+
 
 refresh_screen();
 //ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
@@ -279,6 +284,10 @@ int screenbytes;
 pthread_t thread_id;
 pthread_t shuttle_thread_id;
 
+start_server_stream();
+
+printf(" SERVER STREAM HAS SETIP \n");
+
 // Open the framebuffer device file for reading and writing
 fbfd = open("/dev/fb0", O_RDWR);
 if (fbfd == -1) 
@@ -291,10 +300,10 @@ if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo))
 	    printf("Error reading variable screen info.\n");
 printf("Display info %dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel );
 
-openTouchScreen();
-pthread_create(&thread_id, NULL, touchscreen_event, NULL);
-open_shuttle();
-pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
+//openTouchScreen();
+//pthread_create(&thread_id, NULL, touchscreen_event, NULL);
+//open_shuttle();
+//pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
 // map framebuffer to user memory 
 screenbytes = finfo.smem_len;
 screensize=screenbytes/2; //2bytes per pixel
