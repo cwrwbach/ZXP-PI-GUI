@@ -47,19 +47,11 @@
 #define SEG_MASK (0x70)  /* Segment field mask. */
 
 //------------------------------------------
-//int sock_fd;
-
-char in_pak_buf[MAX_PAK_LEN];
-char fft_video_buf[FFT_SIZE];
-//short g711_xfer_buf[G711_SIZE];
-
 
 int g_audio_sample_rate;
 int g_sample_rate;
 int g_fft_size;
 int g_center_frequency;
-
-//char fft_circ_buf[FFT_SIZE];
 
 int cb_in_ptr;
 int cb_out_ptr;
@@ -133,9 +125,6 @@ void * do_audio_pak(void)
 int ttt;
 while(1)
     {
-//for(ttt=0;ttt<1024;ttt++)
-//    g711_xfer_buf[ttt] = ttt;
-
     usleep(1000);
     if(audio_flag ==true)
         { //printf(" *\n");
@@ -160,11 +149,6 @@ float audio;
 int rbi;
 static int local_count;
 int rxd_count;
-union c4
-{
-int iii;
-char ccc[4];
-}c4;
    
 //get incoming samples from stream 
 while(1) 
@@ -188,17 +172,6 @@ while(1)
             g711_xfer_buf[i] = alaw2linear(in_pak_buf[i]);
 
             }
-
-
-
-
-c4.ccc[0] = in_pak_buf[1030];
-c4.ccc[1] = in_pak_buf[1031];
-c4.ccc[2] = in_pak_buf[1032];
-c4.ccc[3] = in_pak_buf[1033];
-
-//printf(" rxd pak: %d local: %d \n",c4.iii,local_count++);
-
 
         audio_flag = true;
         break;
