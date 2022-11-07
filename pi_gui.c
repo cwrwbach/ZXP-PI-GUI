@@ -244,7 +244,8 @@ refresh_screen();
 loc_x=20;
 loc_y=200;
 //animation test
-
+int last;
+last = 0;
 for(int test=0;test<10000;test++)
     {
     fill_surface(&spec,rgb565(0x01,0x07,0x01));
@@ -259,8 +260,12 @@ yyy=fft_video_buf[iii];
 
 printf("VID %d \n",yyy);
 
-        plot_line(&spec,iii,255,iii,yyy,WHITE);
-      //  plot_line(&spec,iii,0,iii,200-yyy,WHITE);
+     //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
+        plot_line(&spec,iii,255,iii,yyy+5,BLUE);
+
+plot_line(&spec,iii,last,iii,yyy,WHITE);
+last = yyy;
+
         //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
         }
  //   usleep(200*mS);
