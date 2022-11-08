@@ -203,7 +203,13 @@ void plot_large_string(struct surface * dest, int x, int y,uint8_t * string ,uin
 
 void setPixel(struct surface * dest,int x,int y,uint16_t colour);
 
-//void plot_line (struct surface *dest, int x0, int y0, int x1, int y1);
+void plot_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
+
+void plot_dotted_line(struct surface *dest,int,int,int,int,uint16_t colour);
+
+
+
+
 //void plot_circle (struct surface *dest, int xm, int ym, int r);
 short rgb565(short red,short green,short blue);
 

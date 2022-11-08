@@ -8,6 +8,7 @@
 
 #include "pi_gui.h"
 #include "tslib.h"
+#include "fb2-lib.h"
 #include "network.c"
 
 #define SAMPLE_AMOUNT 2
@@ -179,6 +180,16 @@ int hg,mh,mt,mu,kh,kt,ku,hh,ht,hu;
 
 void draw_grid()
 {
+int i,x,y;
+
+for(i=0;i<7;i++)
+    plot_dotted_line(&specanz,0,i*40,1000,i*40,GREEN);
+
+
+for(i=0;i<11;i++)
+    plot_dotted_line(&specanz,i*100,0,i*100,255,GREEN);
+
+
 }
 
 
@@ -187,16 +198,17 @@ void draw_fft()
 int loc_x,loc_y;
 int dummy;
 
-loc_x=20;
-loc_y=200;
+loc_x=100;
+loc_y=50;
 //animation test
 int last;
 last = 0;
 for(int test=0;test<1000;test++)
     {
-    fill_surface(&spec,rgb565(0x01,0x07,0x01));
+    fill_surface(&specanz,rgb565(0x01,0x07,0x01));
+draw_grid();
 
-plot_dotted_line(&spec,0,220,1000,220,GREEN);
+//plot_dotted_line(&specanz,0,220,1000,220,GREEN);
 
 
     int yyy;
@@ -208,17 +220,17 @@ plot_dotted_line(&spec,0,220,1000,220,GREEN);
 
 yyy=fft_video_buf[iii];
 
-     //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
-        plot_line(&spec,iii,255,iii,yyy+5,BLUE);
+     //   plot_line(&specanz,iii,yyy-5,iii,yyy,WHITE);
+        plot_line(&specanz,iii,255,iii,yyy+5,BLUE);
 
-plot_line(&spec,iii,last,iii,yyy,WHITE);
+plot_line(&specanz,iii,last,iii,yyy,WHITE);
 last = yyy;
 
-        //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
+        //plot_line(&specanz,iii,0,iii,200-yyy,WHITE);
         }
  //   usleep(200*mS);
     ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
-    copy_surface_to_image(&spec,loc_x,loc_y);
+    copy_surface_to_image(&specanz,loc_x,loc_y);
     refresh_screen();
     } 
 
@@ -239,112 +251,24 @@ int i;
 int x,y;
 int loc_x,loc_y;
 
-
-
 make_layout();
 
 printf(" here %d \n",__LINE__);
 
 refresh_screen();
 
-//draw various shapes to test
-//plot_rectangle(&pixbuf,630,400,10,10,WHITE);
-
-/*
-plot_large_string(&panel,50,50,"PANEL",WHITE);
-
-plot_circle(&panel,100,100,20,RED);
-plot_circle(&panel,150,100,30,GREEN);
-plot_circle(&panel,200,100,40,BLUE);
-plot_circle(&panel,250,100,50,CYAN);
-plot_rectangle(&panel,300,100,20,20,WHITE);
-
-plot_huge_numeral(&panel,350,150,'3',WHITE);
-plot_huge_numeral(&panel,400,150,'4',WHITE);
-plot_huge_numeral(&panel,450,150,'5',WHITE);
-
-plot_line(&panel,300,101,500,101,GREEN);
-plot_thick_line(&panel,300,97,500,97,GREEN);
-plot_thick_rectangle(&panel,400,100,60,60,9,GREEN);
-*/
-
-/*
-//copy panel to pixbuf
-loc_x = PANEL_POS_X; 
-loc_y = 0; 
-copy_surface_to_image(&panel,loc_x,loc_y);
-*/
-
-//return;
-
-
-refresh_screen();
-
 plot_large_string(&meter,10,20,"METER",WHITE);
 copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
-
 plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
-
-//plot_large_string(&freq,50,50,"0,145.707.289",WHITE);
-
-plot_huge_numeral(&freq,50,50,'7',WHITE);
-
+//plot_huge_numeral(&freq,50,50,'7',WHITE);
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
-
 refresh_screen();
-
 
 printf(" Send CF request \n");
 update_pitaya_cf(909000);
 
-
 draw_fft();
-//sleep(4);
 
-/*
-loc_x=20;
-loc_y=200;
-//animation test
-int last;
-last = 0;
-for(int test=0;test<1000;test++)
-    {
-    fill_surface(&spec,rgb565(0x01,0x07,0x01));
-    int yyy;
-    //start animation
-    for(int iii =32; iii<1000;iii+=1)
-        {
-
- //      yyy = random()%100;
-
-yyy=fft_video_buf[iii];
-
-
-
-if( iii == 256) yyy=10;
-
-if( iii == 700) yyy=250;
-//printf("VID %d \n",yyy);
-
-     //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
-        plot_line(&spec,iii,255,iii,yyy+5,BLUE);
-
-plot_line(&spec,iii,last,iii,yyy,WHITE);
-last = yyy;
-
-        //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
-        }
- //   usleep(200*mS);
-    ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
-    copy_surface_to_image(&spec,loc_x,loc_y);
-    refresh_screen();
-    } 
-
-
-refresh_screen();
-//ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
-* 
-*/
 }
 
 

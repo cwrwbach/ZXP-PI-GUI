@@ -31,22 +31,22 @@ set_active_digit(2);
 
 for(dg=11;dg>8;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
     }
-plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);//8
+plot_large_character(&freq,dg*32,40,0x3a,WHITE);//8
 dg--;
 
 for(;dg>4;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
     }
 
-plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
+plot_large_character(&freq,dg*32,40,0x3a,WHITE);
 dg--;
 
 for(;dg>0;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
     }
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 }
@@ -73,9 +73,9 @@ pixbuf.data = malloc(IMAGE_WIDTH * IMAGE_HEIGHT * 2);
 pixbuf.sz_x = IMAGE_WIDTH;
 pixbuf.sz_y = IMAGE_HEIGHT;
 
-spec.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
-spec.sz_x = SPEC_WIDTH;
-spec.sz_y = SPEC_HEIGHT;
+specanz.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
+specanz.sz_x = SPEC_WIDTH;
+specanz.sz_y = SPEC_HEIGHT;
 
 finx.data = malloc(FINX_WIDTH * FINX_HEIGHT * 2);
 finx.sz_x = FINX_WIDTH;
@@ -119,10 +119,10 @@ rf_gain.sz_y = RF_GAIN_HEIGHT;
 for(int i = 0 ;i<screensize;i++) 
 	pixbuf.data[i] = rgb565(0x03,0x07,0x03); 
 
-//fill spec backround
-fill_surface(&spec,rgb565(0x07,0x00,0x00)); 
+//fill specanz backround
+//fill_surface(&specanz,rgb565(0x07,0x00,0x00)); 
 //fill finx backround
-fill_surface(&finx,rgb565(0x0f,0x03,0x0f)); 
+//fill_surface(&finx,rgb565(0x0f,0x03,0x0f)); 
 //fill wfall backround
 fill_surface(&wfall,rgb565(0x00,0x0f,0x0f)); 
 //fill freq backround
@@ -144,7 +144,7 @@ digit_display[8] = '1';
 
 plot_freq_digits();
 
-copy_surface_to_image(&spec,SPEC_POS_X,SPEC_POS_Y);
+//copy_surface_to_image(&specanz,SPEC_POS_X,SPEC_POS_Y);
 copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
 copy_surface_to_image(&wfall,WFALL_POS_X,WFALL_POS_Y);
 copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
@@ -229,7 +229,7 @@ while(0)
 
 
 
-//plot_large_string(&spec,10,150,"Spectrum",WHITE);
+//plot_large_string(&specanzanz,10,150,"Spectrum",WHITE);
 
 
 
