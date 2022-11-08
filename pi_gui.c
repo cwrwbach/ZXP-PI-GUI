@@ -177,6 +177,60 @@ int hg,mh,mt,mu,kh,kt,ku,hh,ht,hu;
 
 }
 
+void draw_grid()
+{
+}
+
+
+void draw_fft()
+{
+int loc_x,loc_y;
+int dummy;
+
+loc_x=20;
+loc_y=200;
+//animation test
+int last;
+last = 0;
+for(int test=0;test<1000;test++)
+    {
+    fill_surface(&spec,rgb565(0x01,0x07,0x01));
+
+plot_dotted_line(&spec,0,220,1000,220,GREEN);
+
+
+    int yyy;
+    //start animation
+    for(int iii =32; iii<1000;iii+=1)
+        {
+
+ //      yyy = random()%100;
+
+yyy=fft_video_buf[iii];
+
+     //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
+        plot_line(&spec,iii,255,iii,yyy+5,BLUE);
+
+plot_line(&spec,iii,last,iii,yyy,WHITE);
+last = yyy;
+
+        //plot_line(&spec,iii,0,iii,200-yyy,WHITE);
+        }
+ //   usleep(200*mS);
+    ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
+    copy_surface_to_image(&spec,loc_x,loc_y);
+    refresh_screen();
+    } 
+
+
+refresh_screen();
+//ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
+
+}
+
+
+
+
 //---
 
 void setup_screen()
@@ -185,7 +239,7 @@ int i;
 int x,y;
 int loc_x,loc_y;
 
-int dummy;
+
 
 make_layout();
 
@@ -239,14 +293,21 @@ copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
 refresh_screen();
 
+
+printf(" Send CF request \n");
+update_pitaya_cf(909000);
+
+
+draw_fft();
 //sleep(4);
 
+/*
 loc_x=20;
 loc_y=200;
 //animation test
 int last;
 last = 0;
-for(int test=0;test<10000;test++)
+for(int test=0;test<1000;test++)
     {
     fill_surface(&spec,rgb565(0x01,0x07,0x01));
     int yyy;
@@ -258,6 +319,11 @@ for(int test=0;test<10000;test++)
 
 yyy=fft_video_buf[iii];
 
+
+
+if( iii == 256) yyy=10;
+
+if( iii == 700) yyy=250;
 //printf("VID %d \n",yyy);
 
      //   plot_line(&spec,iii,yyy-5,iii,yyy,WHITE);
@@ -277,7 +343,11 @@ last = yyy;
 
 refresh_screen();
 //ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
+* 
+*/
 }
+
+
 
 //===
 
@@ -323,6 +393,10 @@ clear_screen(31);
 sleep(1);
 	
 setup_screen();
+
+
+printf(" Send CF request \n");
+update_pitaya_cf(909000);
 
 printf(" Looping and sleeping%d \n",__LINE__);
 while(1) sleep(1);

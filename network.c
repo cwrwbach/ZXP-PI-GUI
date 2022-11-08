@@ -7,7 +7,7 @@
 #include <pthread.h>
 #include <liquid.h>
 #include <alsa/asoundlib.h>
-
+#include <math.h>
 
 #define FREQ 4
 #define SRATE 5
@@ -184,6 +184,18 @@ while(1)
     }
 }
 
+
+
+void send_control_packet(int type, int val)
+{
+control_packet[type] = val;
+
+if (sendto(sock_fd, control_packet, sizeof(control_packet) , 0 , (struct sockaddr *) &si_other, slen)==-1)
+    die("control message");
+}
+
+
+
 //---
 
 int setup_network() 
@@ -254,3 +266,83 @@ if(ret==0)
 else
 	printf("NW Thread not created.\n");
 }
+
+void update_pitaya_cf(int cf)
+{
+float ppm_factor, freq;
+int new_data;
+ppm_factor = 0.0;
+
+freq = cf;
+freq = (int)floor(freq*(1.0 + ppm_factor *1.0e-6) + 0.5);
+printf(" new freq: %f \n",freq);
+new_data = (int) freq;
+send_control_packet(FREQ,new_data);
+printf(" done changing F \n");
+}	
+
+void update_pitaya_sr(int sr)
+{
+
+printf(" update pitaya sample rate: %d  \n ",sr);	
+
+send_control_packet(SRATE,sr);
+}	
+
+void update_pitaya_ar(int ar)
+{
+
+send_control_packet(ARATE,ar);
+
+printf(" Audio rate = %d\n",ar);
+}
+
+
+void update_pitaya_demod(int demod)
+{
+
+send_control_packet(DMOD,demod);
+
+printf(" Demod type = %d\n",demod);
+
+}
+
+void update_pitaya_rfg(int gain)
+{
+send_control_packet(RFG,gain);
+printf(" rf gain = %d\n",gain);
+
+}
+
+void update_pitaya_afg(int gain)
+{
+send_control_packet(AFG,gain);
+printf(" AF gain = %d\n",gain);
+
+}
+
+
+void update_pitaya_notch(int gain)
+{
+send_control_packet(AFG,gain);
+printf(" AF gain = %d\n",gain);
+
+}
+
+void update_pitaya_agc(int gain)
+{
+send_control_packet(AFG,gain);
+printf(" AF gain = %d\n",gain);
+
+}
+
+
+void update_pitaya_gain_reduction(int gain)
+{
+send_control_packet(AFG,gain);
+printf(" AF gain = %d\n",gain);
+
+}
+
+
+
