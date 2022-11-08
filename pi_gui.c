@@ -10,6 +10,7 @@
 #include "tslib.h"
 #include "fb2-lib.h"
 #include "network.c"
+#include "waterfall.h"
 
 #define SAMPLE_AMOUNT 2
 
@@ -31,6 +32,9 @@ int n, shuttle;
 char dev_name[256];
 typedef struct input_event EV;
 
+
+char waterfall_buffer[1024][3];
+int wfall_line_num;
 //===
 
 extern char fft_video_buf[FFT_SIZE];
@@ -226,8 +230,12 @@ yyy=fft_video_buf[iii];
 plot_line(&specanz,iii,last,iii,yyy,WHITE);
 last = yyy;
 
+
         //plot_line(&specanz,iii,0,iii,200-yyy,WHITE);
         }
+
+draw_waterfall();
+
  //   usleep(200*mS);
     ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
     copy_surface_to_image(&specanz,loc_x,loc_y);
@@ -240,7 +248,44 @@ refresh_screen();
 
 }
 
+void draw_waterfall()
+{
+uint16_t colour;
+int point;
+char wf_line[1024];
+char fft_val;
+int y;
 
+y = 300 + wfall_line_num;
+
+wfall_line_num ++;
+if(wfall_line_num > 100) wfall_line_num = 0;
+
+
+for(point=0;point<1024;point++)
+    {
+ 
+    fft_val = fft_video_buf[point];
+    colour = rgb565(turbo[fft_val][0],turbo[fft_val][1],turbo[fft_val][2]);
+    wf_line[point] = colour;
+
+
+
+set_image_pix(point,y,colour);
+  //  setPixel(&wfall,point,y, colour);
+}
+
+
+//for (i = left; i < wide; i++)
+//        {
+//        int inx = 50+outbuf[i]; //100+trace_buf[i];
+//        painter_wf.setPen(QColor(turbo[inx][0],turbo[inx][1],turbo[inx][2]));
+//        painter_wf.drawPoint(i,0);
+//        }
+
+
+
+}
 
 
 //---
@@ -282,6 +327,8 @@ short rgba;
 int screenbytes;
 pthread_t thread_id;
 pthread_t shuttle_thread_id;
+
+wfall_line_num = 0;
 
 start_server_stream();
 

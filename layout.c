@@ -124,9 +124,9 @@ for(int i = 0 ;i<screensize;i++)
 //fill finx backround
 //fill_surface(&finx,rgb565(0x0f,0x03,0x0f)); 
 //fill wfall backround
-fill_surface(&wfall,rgb565(0x00,0x0f,0x0f)); 
+//fill_surface(&wfall,rgb565(0x00,0x0f,0x0f)); 
 //fill freq backround
-fill_surface(&freq,rgb565(0x07,0x00,0x00)); 
+//fill_surface(&freq,rgb565(0x07,0x00,0x00)); 
 
 //fill meter backround
 fill_surface(&meter,rgb565(0x00,0x00,0x07)); 
