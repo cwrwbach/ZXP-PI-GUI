@@ -95,6 +95,20 @@ for(y=0;y<surf->sz_y;y++) //height
         pixbuf.data[x+loc_x + (loc_y*IMAGE_WIDTH)+(y*IMAGE_WIDTH)] = surf->data[x+y*surf->sz_x];
         }
 }
+/*
+void scroll_surface_to_image(struct surface * surf, int loc_x,int loc_y)
+{
+int x,y;
+
+loc_x += 1; //to bump down down a line
+//copy to image but with each line pushed down by one
+for(y=0;y<surf->sz_y;y++) //height
+   for(x=0;x<surf->sz_x;x++) //width
+        {
+        pixbuf.data[x+loc_x + (loc_y*IMAGE_WIDTH)+(y*IMAGE_WIDTH)] = surf->data[x+y*surf->sz_x];
+        }
+}
+*/
 
 void fill_surface(struct surface * surf,uint16_t colour)
 {

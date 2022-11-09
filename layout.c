@@ -77,6 +77,16 @@ specanz.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
 specanz.sz_x = SPEC_WIDTH;
 specanz.sz_y = SPEC_HEIGHT;
 
+wfall.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
+wfall.sz_x = SPEC_WIDTH;
+wfall.sz_y = SPEC_HEIGHT;
+
+top_line.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
+top_line.sz_x = SPEC_WIDTH;
+top_line.sz_y = 1;
+
+
+
 finx.data = malloc(FINX_WIDTH * FINX_HEIGHT * 2);
 finx.sz_x = FINX_WIDTH;
 finx.sz_y = FINX_HEIGHT;
@@ -145,15 +155,15 @@ digit_display[8] = '1';
 plot_freq_digits();
 
 //copy_surface_to_image(&specanz,SPEC_POS_X,SPEC_POS_Y);
-copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
-copy_surface_to_image(&wfall,WFALL_POS_X,WFALL_POS_Y);
-copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
-copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+//copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
+//copy_surface_to_image(&wfall,WFALL_POS_X,WFALL_POS_Y);
+//copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
+//copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
 //copy_surface_to_image(&demod,DEMOD_POS_X,DEMOD_POS_Y);
 //copy_surface_to_image(&samp_rate,SAMP_RATE_POS_X,SAMP_RATE_POS_Y);
-copy_surface_to_image(&rf_gain,RF_GAIN_POS_X,RF_GAIN_POS_Y);
-copy_surface_to_image(&af_gain,AF_GAIN_POS_X,AF_GAIN_POS_Y);
+//copy_surface_to_image(&rf_gain,RF_GAIN_POS_X,RF_GAIN_POS_Y);
+//copy_surface_to_image(&af_gain,AF_GAIN_POS_X,AF_GAIN_POS_Y);
 
 
 //Make DEMOD buttons

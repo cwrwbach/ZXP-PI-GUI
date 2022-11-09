@@ -116,7 +116,7 @@ uint16_t backround_col;
 uint16_t border_col;
 uint16_t text_col;
 char text[40];
-}pixbuf,freq,specanz,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,active;
+}pixbuf,freq,specanz,finx,wfall,meter,demod,samp_rate,af_gain,rf_gain,active,top_line;
 
 void create_surface(struct surface *);
 void clear_screen(uint16_t);
