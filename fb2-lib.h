@@ -12,7 +12,6 @@
 #include <wchar.h>
 #include <inttypes.h>
 
-
 #define IMAGE_WIDTH 1280
 #define IMAGE_HEIGHT 800
 
@@ -25,7 +24,6 @@
 #define SCOPE_HEIGHT 200
 #define SCOPE_POS_X 50
 #define SCOPE_POS_Y 50
-
 
 #define WHITE   0xffff
 #define BLACK   0x0000
@@ -181,31 +179,20 @@
 
 extern struct surface pixbuf,freq,panel_2;
 
-
-//int fbfd; // framebuffer file descriptor
-//short *fbp;
-
-//struct fb_fix_screeninfo finfo;
-//long int screensize ;
-
-
 struct timespec start;
 struct timespec end;
 struct timespec dif;
 float usec;
 
-//uint16_t shadow[1280 * 800];
-//uint16_t panel_1[1280 * 800];
+//void plot_circle (struct surface *dest, int xm, int ym, int r,uint16_t colour);
 
-void plot_circle (struct surface *dest, int xm, int ym, int r,uint16_t colour);
+//void plot_large_string(struct surface * dest, int x, int y,uint8_t * string ,uint16_t colour);
 
-void plot_large_string(struct surface * dest, int x, int y,uint8_t * string ,uint16_t colour);
+//void set_setixel(struct surface * dest,int x,int y,uint16_t colour);
 
-void setPixel(struct surface * dest,int x,int y,uint16_t colour);
+//void plot_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
 
-void plot_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
-
-void plot_dotted_line(struct surface *dest,int,int,int,int,uint16_t colour);
+//void plot_dotted_line(struct surface *dest,int,int,int,int,uint16_t colour);/
 
 
 
@@ -214,3 +201,29 @@ void plot_dotted_line(struct surface *dest,int,int,int,int,uint16_t colour);
 short rgb565(short red,short green,short blue);
 
 void show_time();
+
+short rgb565(short red,short green,short blue);
+void plot_large_character(struct surface *dest,int x,int y,uint8_t char_num,uint16_t colour);
+void plot_huge_numeral(struct surface *dest,int x,int y,uint8_t numeral,uint16_t colour);
+void plot_small_character(struct surface *dest,int x,int y,uint8_t char_num,uint16_t colour);
+void plot_large_string(struct surface *dest,int x,int y,uint8_t *string,uint16_t colour);
+void plot_button(struct surface *dest,int x0,int y0,int sz_x,int sz_y,uint16_t backround_col,uint16_t border_col,uint16_t text_col,char text[40]);
+void plot_thick_rectangle(struct surface *dest,int x0,int y0,int sz_x,int sz_y,int thickness,uint16_t colour);
+void plot_rectangle(struct surface *dest,int x0,int y0,int sz_x,int sz_y,uint16_t colour);
+void plot_circle(struct surface *dest,int xm,int ym,int r,uint16_t colour);
+void plot_thick_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
+void plot_dotted_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
+void plot_line(struct surface *dest,int x0,int y0,int x1,int y1,uint16_t colour);
+void fill_surface(struct surface *surf,uint16_t colour);
+void copy_surface_to_image(struct surface *surf,int loc_x,int loc_y);
+void refresh_screen();
+void set_pixel(struct surface *dest,int x,int y,uint16_t colour);
+void xor_image_pix(int x,int y,uint16_t pixval);
+void set_image_pix(int x,int y,uint16_t pixval);
+void clear_screen(uint16_t pixval);
+uint16_t get_image_pix(int x,int y);
+void create_surface(struct surface *cs_dest);
+//extern int screensize;
+extern short *frame_buf;
+
+

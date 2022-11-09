@@ -146,7 +146,7 @@ void plot_button(struct surface *,int,int,int,int,uint16_t,uint16_t,uint16_t,cha
 
 void show_time();
 
-
+void draw_waterfall();
 
 
 
