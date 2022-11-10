@@ -126,8 +126,8 @@ rf_gain.sz_x=RF_GAIN_WIDTH;
 rf_gain.sz_y = RF_GAIN_HEIGHT;
 
 //fill image backround
-for(int i = 0 ;i<screensize;i++) 
-	pixbuf.data[i] = rgb565(0x03,0x07,0x03); 
+//for(int i = 0 ;i<screensize;i++) 
+//	pixbuf.data[i] = rgb565(0x03,0x07,0x03); 
 
 //fill specanz backround
 //fill_surface(&specanz,rgb565(0x07,0x00,0x00)); 

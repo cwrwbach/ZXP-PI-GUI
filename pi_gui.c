@@ -176,7 +176,7 @@ void draw_grid()
 int i,x,y;
 
 for(i=0;i<7;i++)
-    plot_dotted_line(&specanz,0,i*40,1000,i*40,GREEN);
+    plot_dotted_line(&specanz,0,i*40,1000,i*40,YELLOW);
 
 for(i=0;i<11;i++)
     plot_dotted_line(&specanz,i*100,0,i*100,255,GREEN);
@@ -189,17 +189,18 @@ int x,y;
 int loc_x,loc_y;
 
 make_layout();
-refresh_screen();
-plot_large_string(&meter,10,20,"METER",WHITE);
-copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
 
-plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
-//plot_huge_numeral(&freq,50,50,'7',WHITE);
-copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 refresh_screen();
+//plot_large_string(&meter,10,20,"METER",WHITE);
+//copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
+
+//plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
+//plot_huge_numeral(&freq,50,50,'7',WHITE);
+//copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+//refresh_screen();
 
 printf(" Send C.Freq request \n");
-update_pitaya_cf(5520000);
+update_pitaya_cf(5000000);
 
 fill_surface(&wfall,GREY);
 }
@@ -212,15 +213,15 @@ unsigned char fft_val;
 int loc_x,loc_y;
 unsigned int wf_ln;
 
-loc_x = 100;
-loc_y = 450;
+loc_x = 50;
+loc_y = 400;
 
 wf_ln++;
-if(wf_ln > 200)
+if(wf_ln > WFALL_HEIGHT)
     wf_ln = 1;
 
 //Draw first line of waterfall
-for(point=0;point<1024;point++)
+for(point=0;point<FFT_SIZE;point++)
     {
     fft_val = 255- (fft_video_buf[point]);
     fft_val *59; //fixme this LOB
@@ -231,7 +232,7 @@ for(point=0;point<1024;point++)
 copy_surface_to_image(&wfall,loc_x,loc_y);
 
 //Scroll all lines up, starting from the bottom
-for(int ll = 200; ll >=0 ; ll--)
+for(int ll = WFALL_HEIGHT; ll >=0 ; ll--)
     {
     for(int pp = 0;pp<WFALL_WIDTH;pp++)
         {
@@ -249,7 +250,7 @@ int dummy;
 int last;
 int db_lev;
 
-loc_x=100;
+loc_x=50;
 loc_y=50;
 last = 255;
 db_lev = 255;
@@ -257,7 +258,7 @@ db_lev = 255;
 fill_surface(&specanz,rgb565(0x01,0x07,0x01));
 draw_grid();
 
-for(int iii =32; iii<1000;iii+=1)
+for(int iii = 4; iii<1040;iii+=1)
     {
     db_lev=fft_video_buf[iii];
     plot_line(&specanz,iii,255,iii,db_lev+5,BLUE);
@@ -274,7 +275,7 @@ refresh_screen();
 //ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
 }
 
-int control_loop(int quit)
+int main_loop(int quit)
 {
 while(quit)
     {
@@ -323,13 +324,11 @@ frame_buf = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbf
 if ((int)frame_buf == -1) 
 	    printf("Failed to mmap.\n");
 
-clear_screen(31);
+clear_screen(rgb565(0x04,0x02,0x00));
 setup_screen();
 
-
 printf(" Looping in control loop: %d \n",__LINE__);
-
-quit_request=control_loop(1); //loop in here until quit recieved
+quit_request=main_loop(1); //loop in here until quit recieved
 
 // cleanup
 printf("\n ALL done, cleaning up \n");

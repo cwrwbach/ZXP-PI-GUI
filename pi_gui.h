@@ -36,7 +36,7 @@
 
 
 #define WFALL_WIDTH 1032
-#define WFALL_HEIGHT 200
+#define WFALL_HEIGHT 256
 #define WFALL_POS_X 10
 #define WFALL_POS_Y 260
 
