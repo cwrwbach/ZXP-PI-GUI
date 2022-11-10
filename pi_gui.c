@@ -200,7 +200,7 @@ refresh_screen();
 //refresh_screen();
 
 printf(" Send C.Freq request \n");
-update_pitaya_cf(5000000);
+update_pitaya_cf(5505000);
 
 fill_surface(&wfall,GREY);
 }
@@ -216,6 +216,10 @@ unsigned int wf_ln;
 loc_x = 50;
 loc_y = 400;
 
+
+//fill_surface(&wfall,rgb565(0x00,0x00,0x00));
+
+
 wf_ln++;
 if(wf_ln > WFALL_HEIGHT)
     wf_ln = 1;
@@ -223,11 +227,32 @@ if(wf_ln > WFALL_HEIGHT)
 //Draw first line of waterfall
 for(point=0;point<FFT_SIZE;point++)
     {
-    fft_val = 255- (fft_video_buf[point]);
-    fft_val *59; //fixme this LOB
-    colour = rgb565(turbo[fft_val][0],turbo[fft_val][1],turbo[fft_val][2]);
-    //   wf_line[point] = colour;
-    set_pixel(&wfall,point , 0, colour);
+    fft_val = 255-(fft_video_buf[point]);
+fft_val*=1 ;
+
+    colour = rgb565(turbo[fft_val][0]/8,turbo[fft_val][1]/4,turbo[fft_val][2]/8);
+
+
+//colour = rgb565(plasma[fft_val][0],plasma[fft_val][1],plasma[fft_val][2]);
+//if(point == 514)
+//printf(" %d : %d %x %x %x\n",point,fft_val,plasma[fft_val][0],plasma[fft_val][1],plasma[fft_val][2]);
+
+//colour = rgb565(turbo[fft_val][0]/8,turbo[fft_val][1]/4,turbo[fft_val][2]/8);
+
+
+
+colour = C_DIM_GRAY;
+if (fft_val > 20) colour = GREEN;
+if (fft_val > 80) colour = RED;    
+
+set_pixel(&wfall,point , 0, colour);
+set_pixel(&wfall,point+1 , 0, colour);
+set_pixel(&wfall,point+2 , 0, colour);
+set_pixel(&wfall,point+3, 0, colour);
+set_pixel(&wfall,point+4 , 0, colour);
+set_pixel(&wfall,point+5 , 0, colour);
+
+
     }
 copy_surface_to_image(&wfall,loc_x,loc_y);
 
@@ -326,6 +351,8 @@ if ((int)frame_buf == -1)
 
 clear_screen(rgb565(0x04,0x02,0x00));
 setup_screen();
+
+fill_surface(&wfall,rgb565(0x00,0x00,0x00));
 
 printf(" Looping in control loop: %d \n",__LINE__);
 quit_request=main_loop(1); //loop in here until quit recieved
