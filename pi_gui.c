@@ -27,26 +27,20 @@ int h;
 int sample;
 int fd;
 
-
-
 int fds;
 int n, shuttle;
 char dev_name[256];
 typedef struct input_event EV;
 
-
 char waterfall_buffer[1024][3];
-int wfall_line_num;
-int wf_ln;
+
 //===
 
 extern char fft_video_buf[FFT_SIZE];
 
 EV ev;
-
 void getTouchScreenDetails(int *,int *,int *,int *);
 void getTouchSample(int *, int *, int *);
-
 
 static void sig(int sig)
 {
@@ -56,12 +50,10 @@ static void sig(int sig)
 	fflush(stdout);
 	exit(1);
 }
-
 //---
+
 int openTouchScreen()
 {
-
-
 strcpy(dev_name,"/dev/input/by-id/usb-eGalax_Inc._USB_TouchController-event-if00");
 fds = open(dev_name, O_RDONLY| O_NONBLOCK);
         if ((fd = open(dev_name, O_RDONLY)) < 0) 
@@ -70,7 +62,6 @@ fds = open(dev_name, O_RDONLY| O_NONBLOCK);
             printf("Touchscrren failed\n");        
                 return 1;
         }
-
 
 //FIXME
 getTouchScreenDetails(&screenXmin,&screenXmax,&screenYmin,&screenYmax);
@@ -108,10 +99,6 @@ if(ioctl( fds, EVIOCGRAB, 1 ) < 0)
 printf("Shuttle device connected. dv: %d\n",fds);;
 }
 
-
-
-
-
 void * shuttle_event(void *shuttle_thread_id)
 {
 int n;
@@ -140,7 +127,6 @@ printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
 
 
 }
-
 
 void * touchscreen_event(void *thread_id)
 {
@@ -192,120 +178,9 @@ int i,x,y;
 for(i=0;i<7;i++)
     plot_dotted_line(&specanz,0,i*40,1000,i*40,GREEN);
 
-
 for(i=0;i<11;i++)
     plot_dotted_line(&specanz,i*100,0,i*100,255,GREEN);
-
-
 }
-
-
-void draw_fft()
-{
-int loc_x,loc_y;
-int dummy;
-
-loc_x=100;
-loc_y=50;
-//animation test
-int last;
-last = 0;
-for(int test=0;test<1000;test++)
-    {
-    fill_surface(&specanz,rgb565(0x01,0x07,0x01));
-draw_grid();
-
-//plot_dotted_line(&specanz,0,220,1000,220,GREEN);
-
-
-    int yyy;
-    //start animation
-    for(int iii =32; iii<1000;iii+=1)
-        {
-
- //      yyy = random()%100;
-
-yyy=fft_video_buf[iii];
-
-     //   plot_line(&specanz,iii,yyy-5,iii,yyy,WHITE);
-        plot_line(&specanz,iii,255,iii,yyy+5,BLUE);
-
-plot_line(&specanz,iii,last,iii,yyy,WHITE);
-last = yyy;
-
-
-        //plot_line(&specanz,iii,0,iii,200-yyy,WHITE);
-        }
-
-
-
- //   usleep(200*mS);
-    ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
-    copy_surface_to_image(&specanz,loc_x,loc_y);
-    refresh_screen();
-
-
-
-draw_waterfall();
-refresh_screen();
-    } 
-
-
-refresh_screen();
-//ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
-
-}
-
-void draw_waterfall()
-{
-uint16_t colour;
-int point;
-//char wf_line[1024];
-char fft_val;
-int loc_x,loc_y;
-
-loc_x = 100;
-loc_y = 450;
-
-wf_ln++;
-if(wf_ln > 200)
-    wf_ln = 1;
-
-for(point=0;point<1024;point++)
-    {
- 
-    fft_val = 255- (fft_video_buf[point]);
-//if(fft_val < 20) fft_val = 10;
-    colour = rgb565(turbo[fft_val][0],turbo[fft_val][1],turbo[fft_val][2]);
- //   wf_line[point] = colour;
-
-  set_pixel(&wfall,point  , 0, colour);
-
-    }
-//copy_surface_to_image(&top_line,loc_x,loc_y);
-
-//scroll_surface_to_image(&wfall,loc_x,loc_y);
-copy_surface_to_image(&wfall,loc_x,loc_y);
-
-
-for(int ll = 200; ll >=0 ; ll--)
-    {
-
-    for(int pp = 0;pp<WFALL_WIDTH;pp++)
-        {
-        wfall.data[((ll+1)*WFALL_WIDTH)+WFALL_WIDTH+pp] = wfall.data[((ll) * WFALL_WIDTH) + pp];
-
-        }
-    }
-    
-//memcpy( wfall.data+(WFALL_WIDTH*2) ,wfall.data,WFALL_WIDTH * (WFALL_HEIGHT-1) * 2);
-
-copy_surface_to_image(&wfall,loc_x,loc_y);
-refresh_screen();
-}
-
-
-//---
 
 void setup_screen()
 {
@@ -314,29 +189,99 @@ int x,y;
 int loc_x,loc_y;
 
 make_layout();
-
-printf(" here %d \n",__LINE__);
-
 refresh_screen();
-
 plot_large_string(&meter,10,20,"METER",WHITE);
 copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
+
 plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
 //plot_huge_numeral(&freq,50,50,'7',WHITE);
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 refresh_screen();
 
-printf(" Send CF request \n");
-update_pitaya_cf(909000);
-
+printf(" Send C.Freq request \n");
+update_pitaya_cf(5520000);
 
 fill_surface(&wfall,GREY);
-
-draw_fft();
-//draw_waterfall();
 }
 
+void draw_waterfall()
+{
+uint16_t colour;
+int point;
+unsigned char fft_val;
+int loc_x,loc_y;
+unsigned int wf_ln;
 
+loc_x = 100;
+loc_y = 450;
+
+wf_ln++;
+if(wf_ln > 200)
+    wf_ln = 1;
+
+//Draw first line of waterfall
+for(point=0;point<1024;point++)
+    {
+    fft_val = 255- (fft_video_buf[point]);
+    fft_val *59; //fixme this LOB
+    colour = rgb565(turbo[fft_val][0],turbo[fft_val][1],turbo[fft_val][2]);
+    //   wf_line[point] = colour;
+    set_pixel(&wfall,point , 0, colour);
+    }
+copy_surface_to_image(&wfall,loc_x,loc_y);
+
+//Scroll all lines up, starting from the bottom
+for(int ll = 200; ll >=0 ; ll--)
+    {
+    for(int pp = 0;pp<WFALL_WIDTH;pp++)
+        {
+        wfall.data[((ll+1)*WFALL_WIDTH)+WFALL_WIDTH+pp] = wfall.data[((ll)* WFALL_WIDTH)+pp];
+        }
+    }
+copy_surface_to_image(&wfall,loc_x,loc_y);
+refresh_screen();
+}
+
+void draw_fft()
+{
+int loc_x,loc_y;
+int dummy;
+int last;
+int db_lev;
+
+loc_x=100;
+loc_y=50;
+last = 255;
+db_lev = 255;
+
+fill_surface(&specanz,rgb565(0x01,0x07,0x01));
+draw_grid();
+
+for(int iii =32; iii<1000;iii+=1)
+    {
+    db_lev=fft_video_buf[iii];
+    plot_line(&specanz,iii,255,iii,db_lev+5,BLUE);
+
+    plot_line(&specanz,iii,last,iii,db_lev,WHITE);
+    last = db_lev;
+    }
+
+usleep(100*mS); //FIXME - rate should be controled elsewhere
+
+ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
+copy_surface_to_image(&specanz,loc_x,loc_y);
+refresh_screen();
+//ioctl(fbfd, FBIO_WAITFORVSYNC, &dummy); // Wait for frame sync
+}
+
+int control_loop(int quit)
+{
+while(quit)
+    {
+    draw_fft();
+    draw_waterfall();
+    }
+}
 
 //===
 
@@ -345,25 +290,22 @@ int main(int argc, char* argv[])
 unsigned int red,green,blue;
 short rgba;
 int screenbytes;
+int quit_request;
 pthread_t thread_id;
 pthread_t shuttle_thread_id;
 
-wfall_line_num = 0;
-wf_ln = 0;
 
 start_server_stream();
+printf(" SERVER STREAM HAS SETUP \n");
 
-printf(" SERVER STREAM HAS SETIP \n");
-
-// Open the framebuffer device file for reading and writing
-fbfd = open("/dev/fb0", O_RDWR);
+fbfd = open("/dev/fb0", O_RDWR); // Open the framebuffer device file for reading and writing
 if (fbfd == -1) 
-        printf("Error: cannot open framebuffer device.\n");
- // Get fixed screen information
-if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo)) 
-	    printf("Error reading fixed information.\n");
-// Get variable screen information
-if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo)) 
+    printf("Error: cannot open framebuffer device.\n");
+ 
+if (ioctl(fbfd, FBIOGET_FSCREENINFO, &finfo)) // Get fixed screen information
+    printf("Error reading fixed information.\n");
+
+if (ioctl(fbfd, FBIOGET_VSCREENINFO, &vinfo)) // Get variable screen information
 	    printf("Error reading variable screen info.\n");
 printf("Display info %dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pixel );
 
@@ -372,6 +314,7 @@ printf("Display info %dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pi
 //open_shuttle();
 //pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
 // map framebuffer to user memory 
+
 screenbytes = finfo.smem_len;
 screensize=screenbytes/2; //2bytes per pixel
 printf(" \n screensize=%d shorts\n",screensize);
@@ -380,21 +323,16 @@ frame_buf = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbf
 if ((int)frame_buf == -1) 
 	    printf("Failed to mmap.\n");
 
-
 clear_screen(31);
-sleep(1);
-	
 setup_screen();
 
 
-printf(" Send CF request \n");
-update_pitaya_cf(909000);
+printf(" Looping in control loop: %d \n",__LINE__);
 
-printf(" Looping and sleeping%d \n",__LINE__);
-while(1) sleep(1);
+quit_request=control_loop(1); //loop in here until quit recieved
 
-printf("\n ALL done, cleaning up \n");
 // cleanup
+printf("\n ALL done, cleaning up \n");
 munmap(frame_buf, screensize);
 close(fbfd);
 printf("    DONE     \n");
