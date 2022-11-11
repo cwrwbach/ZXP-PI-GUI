@@ -163,7 +163,7 @@ plot_freq_digits();
 //copy_surface_to_image(&demod,DEMOD_POS_X,DEMOD_POS_Y);
 //copy_surface_to_image(&samp_rate,SAMP_RATE_POS_X,SAMP_RATE_POS_Y);
 //copy_surface_to_image(&rf_gain,RF_GAIN_POS_X,RF_GAIN_POS_Y);
-//copy_surface_to_image(&af_gain,AF_GAIN_POS_X,AF_GAIN_POS_Y);
+copy_surface_to_image(&af_gain,AF_GAIN_POS_X,AF_GAIN_POS_Y);
 
 
 //Make DEMOD buttons

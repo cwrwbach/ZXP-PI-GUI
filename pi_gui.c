@@ -5,6 +5,8 @@
 #include <signal.h>
 #include <pthread.h>
 #include <locale.h>
+#include <sys/ioctl.h>
+#include <linux/kd.h>
 
 #include "pi_gui.h"
 #include "tslib.h"
@@ -27,7 +29,9 @@ int h;
 int sample;
 int fd;
 
-int fds;
+int fds; //shuttle
+int fdk; //keypad
+int fdt; //Touch
 int n, shuttle;
 char dev_name[256];
 typedef struct input_event EV;
@@ -75,7 +79,7 @@ scaleYvalue = ((float)screenYmax-screenYmin) / yres;
 printf ("Y Scale Factor = %f\n", scaleYvalue);
 }
 
-void open_shuttle()
+int open_shuttle()
 {
 int xx;
 printf(" Hello shuttle open \n");
@@ -86,34 +90,106 @@ fds = open(dev_name, O_RDONLY| O_NONBLOCK);
 if (fds < 0) 
 	{
 	printf(" Failed to open shuttle device\n");
-	return;
+	return -1;
     }            
 // Flag it as exclusive access
 if(ioctl( fds, EVIOCGRAB, 1 ) < 0) 
 	{
     printf( "evgrab ioctl\n" );
-	return;
+	return 0;
     }
 
 // if we get to here, we're connected to shuttleXpress
-printf("Shuttle device connected. dv: %d\n",fds);;
+printf("Shuttle device connected. dv: %d\n",fds);
+return 0;
 }
+
+int open_keypad()
+{
+int xx;
+printf(" Hello Keypad open \n");
+
+//open the keypad device
+//strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-if01");
+strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-kbd");
+
+//usb-SEM_HCT_Keyboard-event-if01
+//usb-SEM_HCT_Keyboard-event-kbd
+
+
+fdk = open(dev_name, O_RDONLY| O_NONBLOCK);
+if (fdk < 0) 
+	{
+	printf(" Failed to open keypad device\n");
+	return -1;
+    }            
+// Flag it as exclusive access
+if(ioctl( fdk, EVIOCGRAB, 1 ) < 0) 
+	{
+    printf( "evgrab not exclusive ioctl\n" );
+	return -2;
+    }
+
+// if we get to here, we're connected to shuttleXpress
+printf("Keypad device connected. dv: %d\n",fdk);
+return 0;
+}
+
+
+
+
+
+
 
 void * shuttle_event(void *shuttle_thread_id)
 {
 int n;
 
 while(1)
+    {
+    usleep(10000); //anti cpu hogger
+    n=read(fds,&ev,sizeof (ev));
+    if(n > 0)
+	    {
+    printf(" Data is rxd from the Shuttle N: %d \n",n);
+    printf(" Data recd: *** %d \n",n);
+    printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
+	    }
+    }
+}
+
+void * keypad_event(void *keypad_thread_id)
+{
+int n;
+int *pstatus;
+
+char fred;
+
+while(0 ) //This does not work - as such
+    {
+    fred = 0x0f;
+    ioctl (fdk, NULL, KDSETLED, fred);
+    usleep(500000);
+    fred = 0x00;
+    ioctl (fdk, NULL, KDSETLED, fred);
+    usleep(500000);
+    }
+
+
+while(1)
 {
 usleep(10000); //anti cpu hogger
 //printf("looping \n");
-n=read(fds,&ev,sizeof (ev));
+n=read(fdk,&ev,sizeof (ev));
 //printf (" n= %d\n",n);
 if(n > 0)
 	{
-printf(" Data is rxd from the Shuttle N: %d \n",n);
+printf(" Data is rxd from the Keypad N: %d \n",n);
 printf(" Data recd: *** %d \n",n);
 printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
+
+
+
 	}
 
 }
@@ -127,6 +203,10 @@ printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
 
 
 }
+
+
+
+
 
 void * touchscreen_event(void *thread_id)
 {
@@ -166,9 +246,7 @@ void create_freq_digits_display(unsigned int hertz)
 {
 int hg,mh,mt,mu,kh,kt,ku,hh,ht,hu;
 //hg=hertz/ 
-
 //put_big_digit(freq, herz/1 
-
 }
 
 void draw_grid()
@@ -194,7 +272,7 @@ refresh_screen();
 //plot_large_string(&meter,10,20,"METER",WHITE);
 //copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
 
-//plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
+plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
 //plot_huge_numeral(&freq,50,50,'7',WHITE);
 //copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 //refresh_screen();
@@ -213,8 +291,8 @@ unsigned char fft_val;
 int loc_x,loc_y;
 unsigned int wf_ln;
 
-loc_x = 50;
-loc_y = 400;
+loc_x = 10;
+loc_y = 300;
 
 
 //fill_surface(&wfall,rgb565(0x00,0x00,0x00));
@@ -275,8 +353,8 @@ int dummy;
 int last;
 int db_lev;
 
-loc_x=50;
-loc_y=50;
+loc_x=10;
+loc_y=10;
 last = 255;
 db_lev = 255;
 
@@ -306,6 +384,9 @@ while(quit)
     {
     draw_fft();
     draw_waterfall();
+
+update_pitaya_cf(5505000); //stay alive
+
     }
 }
 
@@ -319,7 +400,8 @@ int screenbytes;
 int quit_request;
 pthread_t thread_id;
 pthread_t shuttle_thread_id;
-
+pthread_t keypad_thread_id;
+int err;
 
 start_server_stream();
 printf(" SERVER STREAM HAS SETUP \n");
@@ -337,14 +419,19 @@ printf("Display info %dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pi
 
 //openTouchScreen();
 //pthread_create(&thread_id, NULL, touchscreen_event, NULL);
-//open_shuttle();
-//pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
-// map framebuffer to user memory 
+
+err = open_shuttle();
+    pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
+
+err = open_keypad();
+    pthread_create(&keypad_thread_id, NULL, keypad_event, NULL);
+
 
 screenbytes = finfo.smem_len;
 screensize=screenbytes/2; //2bytes per pixel
 printf(" \n screensize=%d shorts\n",screensize);
 
+// map framebuffer to user memory 
 frame_buf = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
 if ((int)frame_buf == -1) 
 	    printf("Failed to mmap.\n");
@@ -355,6 +442,7 @@ setup_screen();
 fill_surface(&wfall,rgb565(0x00,0x00,0x00));
 
 printf(" Looping in control loop: %d \n",__LINE__);
+
 quit_request=main_loop(1); //loop in here until quit recieved
 
 // cleanup

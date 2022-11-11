@@ -275,10 +275,10 @@ ppm_factor = 0.0;
 
 freq = cf;
 freq = (int)floor(freq*(1.0 + ppm_factor *1.0e-6) + 0.5);
-printf(" new freq: %f \n",freq);
+//printf(" new freq: %f \n",freq);
 new_data = (int) freq;
 send_control_packet(FREQ,new_data);
-printf(" done changing F \n");
+//printf(" done changing F \n");
 }	
 
 void update_pitaya_sr(int sr)

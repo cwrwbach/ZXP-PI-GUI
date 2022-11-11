@@ -63,12 +63,12 @@
 
 #define SAMP_RATE_WIDTH 200
 #define SAMP_RATE_HEIGHT 300
-#define SAMP_RATE_POS_X 1060
+#define SAMP_RATE_POS_X 860
 #define SAMP_RATE_POS_Y 50
 
 #define DEMOD_WIDTH 200
 #define DEMOD_HEIGHT 300
-#define DEMOD_POS_X 1060
+#define DEMOD_POS_X 760
 #define DEMOD_POS_Y 400
 
 #define ACTIVE_WIDTH 32
@@ -143,6 +143,7 @@ void refresh_screen();
 void fill_surface(struct surface *,uint16_t);
 void plot_button(struct surface *,int,int,int,int,uint16_t,uint16_t,uint16_t,char *);
 
+int open_shuttle();
 
 void show_time();
 
