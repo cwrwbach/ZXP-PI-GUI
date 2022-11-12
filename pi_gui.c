@@ -260,28 +260,7 @@ for(i=0;i<11;i++)
     plot_dotted_line(&specanz,i*100,0,i*100,255,GREEN);
 }
 
-void setup_screen()
-{
-int i;
-int x,y;
-int loc_x,loc_y;
 
-make_layout();
-
-refresh_screen();
-//plot_large_string(&meter,10,20,"METER",WHITE);
-//copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
-
-plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
-//plot_huge_numeral(&freq,50,50,'7',WHITE);
-//copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
-//refresh_screen();
-
-printf(" Send C.Freq request \n");
-update_pitaya_cf(5505000);
-
-fill_surface(&wfall,GREY);
-}
 
 void draw_waterfall()
 {
@@ -291,12 +270,9 @@ unsigned char fft_val;
 int loc_x,loc_y;
 unsigned int wf_ln;
 
+
 loc_x = 10;
 loc_y = 300;
-
-
-//fill_surface(&wfall,rgb565(0x00,0x00,0x00));
-
 
 wf_ln++;
 if(wf_ln > WFALL_HEIGHT)
@@ -306,32 +282,21 @@ if(wf_ln > WFALL_HEIGHT)
 for(point=0;point<FFT_SIZE;point++)
     {
     fft_val = 255-(fft_video_buf[point]);
-fft_val*=1 ;
-
+    fft_val*=1 ;
     colour = rgb565(turbo[fft_val][0]/8,turbo[fft_val][1]/4,turbo[fft_val][2]/8);
 
+    colour = C_DIM_GRAY;
+    if (fft_val > 20) colour = GREEN;
+    if (fft_val > 80) colour = RED;    
 
-//colour = rgb565(plasma[fft_val][0],plasma[fft_val][1],plasma[fft_val][2]);
-//if(point == 514)
-//printf(" %d : %d %x %x %x\n",point,fft_val,plasma[fft_val][0],plasma[fft_val][1],plasma[fft_val][2]);
-
-//colour = rgb565(turbo[fft_val][0]/8,turbo[fft_val][1]/4,turbo[fft_val][2]/8);
-
-
-
-colour = C_DIM_GRAY;
-if (fft_val > 20) colour = GREEN;
-if (fft_val > 80) colour = RED;    
-
-set_pixel(&wfall,point , 0, colour);
-set_pixel(&wfall,point+1 , 0, colour);
-set_pixel(&wfall,point+2 , 0, colour);
-set_pixel(&wfall,point+3, 0, colour);
-set_pixel(&wfall,point+4 , 0, colour);
-set_pixel(&wfall,point+5 , 0, colour);
-
-
+    set_pixel(&wfall,point , 0, colour);
+    set_pixel(&wfall,point+1 , 0, colour);
+    set_pixel(&wfall,point+2 , 0, colour);
+    set_pixel(&wfall,point+3, 0, colour);
+    set_pixel(&wfall,point+4 , 0, colour);
+    set_pixel(&wfall,point+5 , 0, colour);
     }
+
 copy_surface_to_image(&wfall,loc_x,loc_y);
 
 //Scroll all lines up, starting from the bottom
@@ -436,10 +401,12 @@ frame_buf = (short*)mmap(0, screenbytes, PROT_READ | PROT_WRITE, MAP_SHARED, fbf
 if ((int)frame_buf == -1) 
 	    printf("Failed to mmap.\n");
 
-clear_screen(rgb565(0x04,0x02,0x00));
-setup_screen();
+clear_screen(rgb565(0x0,0x0,0x04));
 
-fill_surface(&wfall,rgb565(0x00,0x00,0x00));
+make_layout();
+
+
+fill_surface(&wfall,rgb565(0x00,0x08,0x00));
 
 printf(" Looping in control loop: %d \n",__LINE__);
 
@@ -453,3 +420,27 @@ printf("    DONE     \n");
 return 0;
 }
 
+/*
+void setup_screen()
+{
+int i;
+int x,y;
+int loc_x,loc_y;
+
+make_layout();
+
+refresh_screen();
+//plot_large_string(&meter,10,20,"METER",WHITE);
+//copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
+
+plot_large_string(&freq,10,20,"FREQUENCY",WHITE);
+//plot_huge_numeral(&freq,50,50,'7',WHITE);
+//copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+//refresh_screen();
+
+printf(" Send C.Freq request \n");
+update_pitaya_cf(5505000);
+
+fill_surface(&wfall,GREY);
+}
+*/

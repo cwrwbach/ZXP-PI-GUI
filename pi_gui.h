@@ -74,10 +74,7 @@
 #define ACTIVE_WIDTH 32
 #define ACTIVE_HEIGHT 140
 
-#define BUTTON_WIDTH 70
-#define BUTTON_HEIGHT 50
-#define BUTTON_POS_X 4
-#define BUTTON_POS_Y 2
+
 
 
 

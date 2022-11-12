@@ -9,6 +9,12 @@
 #include "math.h"
 #include <locale.h>
 
+
+#define BUTTON_WIDTH 70
+#define BUTTON_HEIGHT 50
+#define BUTTON_POS_X 1080
+#define BUTTON_POS_Y 10
+
 char digit_display[10];
 struct surface button[100];
 
@@ -67,6 +73,8 @@ plot_freq_digits();
 
 void make_layout()
 {
+int bn;
+int bb;
 
 //allocate image array
 pixbuf.data = malloc(IMAGE_WIDTH * IMAGE_HEIGHT * 2);
@@ -84,8 +92,6 @@ wfall.sz_y = SPEC_HEIGHT;
 top_line.data = malloc(SPEC_WIDTH * SPEC_HEIGHT * 2);
 top_line.sz_x = SPEC_WIDTH;
 top_line.sz_y = 1;
-
-
 
 finx.data = malloc(FINX_WIDTH * FINX_HEIGHT * 2);
 finx.sz_x = FINX_WIDTH;
@@ -112,7 +118,6 @@ samp_rate.data = malloc(SAMP_RATE_WIDTH * SAMP_RATE_HEIGHT * 2);
 samp_rate.sz_x=SAMP_RATE_WIDTH;
 samp_rate.sz_y = SAMP_RATE_HEIGHT;
 
-
 active.data = malloc(ACTIVE_WIDTH * ACTIVE_HEIGHT * 2);
 active.sz_x=ACTIVE_WIDTH;
 active.sz_y = ACTIVE_HEIGHT;
@@ -125,124 +130,60 @@ rf_gain.data = malloc(RF_GAIN_WIDTH * RF_GAIN_HEIGHT * 2);
 rf_gain.sz_x=RF_GAIN_WIDTH;
 rf_gain.sz_y = RF_GAIN_HEIGHT;
 
-//fill image backround
-//for(int i = 0 ;i<screensize;i++) 
-//	pixbuf.data[i] = rgb565(0x03,0x07,0x03); 
 
-//fill specanz backround
-//fill_surface(&specanz,rgb565(0x07,0x00,0x00)); 
-//fill finx backround
-//fill_surface(&finx,rgb565(0x0f,0x03,0x0f)); 
-//fill wfall backround
-//fill_surface(&wfall,rgb565(0x00,0x0f,0x0f)); 
-//fill freq backround
-//fill_surface(&freq,rgb565(0x07,0x00,0x00)); 
-
-//fill meter backround
-fill_surface(&meter,rgb565(0x00,0x00,0x07)); 
-
-digit_display[0] = '9';
-digit_display[1] = '8';
-digit_display[2] = '7';
-digit_display[3] = '6';
-digit_display[4] = '5';
-digit_display[5] = '4';
-digit_display[6] = '3';
-digit_display[7] = '2';
-digit_display[8] = '1';
-
-
-plot_freq_digits();
-
-//copy_surface_to_image(&specanz,SPEC_POS_X,SPEC_POS_Y);
-//copy_surface_to_image(&finx,FINX_POS_X,FINX_POS_Y);
-//copy_surface_to_image(&wfall,WFALL_POS_X,WFALL_POS_Y);
-//copy_surface_to_image(&meter,METER_POS_X,METER_POS_Y);
-//copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
-
-//copy_surface_to_image(&demod,DEMOD_POS_X,DEMOD_POS_Y);
-//copy_surface_to_image(&samp_rate,SAMP_RATE_POS_X,SAMP_RATE_POS_Y);
-//copy_surface_to_image(&rf_gain,RF_GAIN_POS_X,RF_GAIN_POS_Y);
-copy_surface_to_image(&af_gain,AF_GAIN_POS_X,AF_GAIN_POS_Y);
-
-
-//Make DEMOD buttons
-for(int bn=0;bn<4;bn++)
+//Make two columns of buttons
+//first 10
+for(int bn=0; bn<10;bn++)
     {
     button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
     button[bn].sz_x = BUTTON_WIDTH;
     button[bn].sz_y = BUTTON_HEIGHT;
     }
 
-for(int bn=0;bn<4;bn++)
-    fill_surface(&button[bn],rgb565(0x06,15,0x06));
-
-plot_large_string(&button[0],10,20,"DSB",WHITE);
-plot_large_string(&button[1],10,20,"USB",WHITE);
-plot_large_string(&button[2],10,20,"LSB",WHITE);
-plot_large_string(&button[3],10,20,"NFM",WHITE);
-
-for(int bn=0;bn<4;bn++)
-    {
-    copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 500+(bn*BUTTON_WIDTH)+1*bn);
-    plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
-    }
-
-//Make SAMPLE buttons
-for(int bn=4; bn<8;bn++)
-    {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
-    }
-
-for(int bn=4;bn<8;bn++)
+for(int bn=0;bn<10;bn++)
     fill_surface(&button[bn],rgb565(0x04,15,0x06));
 
-plot_large_string(&button[4],10,20,"SR1",WHITE);
-plot_large_string(&button[5],10,20,"SR2",WHITE);
-plot_large_string(&button[6],10,20,"SR3",WHITE);
-plot_large_string(&button[7],10,20,"SR4",WHITE);
-
-plot_button(&button[7],10,20,BUTTON_WIDTH,BUTTON_HEIGHT,C_BLUE,C_RED,C_WHITE,"ABC");
-
-
-int bb=0;
-for(int bn=4;bn<8;bn++,bb++)
+bb=0;
+for(int bn=0;bn<10;bn++,bb++)
     {
-  copy_surface_to_image(&button[bn],BUTTON_POS_X+1150,BUTTON_POS_Y+ 20+(bb*BUTTON_WIDTH)+1*bb);
-  plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
+    copy_surface_to_image(&button[bn],BUTTON_POS_X,BUTTON_POS_Y+ (bb *75));
     }
 
+//Second 10 to right
+for(int bn=12; bn<22;bn++)
+    {
+    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
+    button[bn].sz_x = BUTTON_WIDTH;
+    button[bn].sz_y = BUTTON_HEIGHT;
+    }
 
+for(int bn=12;bn<22;bn++)
+    fill_surface(&button[bn],rgb565(0x04,0x15,0x03));
 
+bb=0;
+for(int bn=12;bn<22;bn++,bb++)
+    {
+    copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
+    }
 
+//change colour of one button
+bn=4;bb=4; 
+fill_surface(&button[bn],rgb565(0x10,0x00,0x10));
+copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
 
 
 refresh_screen();
-
-
-int demo;
-demo = 10000000;
-set_freq_disp(demo);
-
-while(0)
-    {
-    usleep(100000);
-    set_freq_disp(demo);//
-    demo --;
-    refresh_screen();
-    }
 
 } //make layout
 
 
 
 
+//================ END OF ++++++++++
+//LOOSE ALL BELOW - Here only as spares
+
+
 //plot_large_string(&specanzanz,10,150,"Spectrum",WHITE);
-
-
-
 
 
 /*
@@ -339,4 +280,21 @@ for(int bn=0;bn<4;bn++)
 for(int bn=0;bn<6;bn++)
     fill_surface(&button[bn],rgb565(0x06,0x0,0x06));
 //end buttons -----------------------------------    
+*/
+
+/*
+digit_display[0] = '9';
+digit_display[1] = '8';
+digit_display[2] = '7';
+digit_display[3] = '6';
+digit_display[4] = '5';
+digit_display[5] = '4';
+digit_display[6] = '3';
+digit_display[7] = '2';
+digit_display[8] = '1';
+
+plot_freq_digits();
+
+copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+
 */
