@@ -17,13 +17,11 @@
 
 char digit_display[10];
 struct surface button[100];
-
+struct surface slider[10];
 //---
 
 void set_active_digit(int d_act)
 {
-fill_surface(&active,rgb565(0x07,0x00,0x00)); 
-copy_surface_to_image(&active,FREQ_POS_X+128,FREQ_POS_Y);
 
 }
 
@@ -32,33 +30,36 @@ void plot_freq_digits()
 int dg,dd;
 dd=0;
 
-fill_surface(&freq,rgb565(0x00,0x00,0x00)); 
-set_active_digit(2);
+char string[50] = "    MHz     KHz      Hz";
+
+plot_large_string(&freq,10, 4, & string ,C_DIM_GRAY);
 
 for(dg=11;dg>8;dg--,dd++)
     {
-    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
     }
-plot_large_character(&freq,dg*32,40,0x3a,WHITE);//8
+plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);//8
 dg--;
 
 for(;dg>4;dg--,dd++)
     {
-    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
     }
 
-plot_large_character(&freq,dg*32,40,0x3a,WHITE);
+plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
 dg--;
 
 for(;dg>0;dg--,dd++)
     {
-    plot_large_character(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
     }
+//dg--;
+//plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
+
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 }
-
 //---
-
+/*
 void set_freq_disp(int d_freq)
 {
 for(int n = 0; n<10;n++)
@@ -68,7 +69,7 @@ for(int n = 0; n<10;n++)
     }
 plot_freq_digits();
 }
-
+*/
 //---
 
 void make_layout()
@@ -170,6 +171,59 @@ for(int bn=12;bn<22;bn++,bb++)
 bn=4;bb=4; 
 fill_surface(&button[bn],rgb565(0x10,0x00,0x10));
 copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
+
+//---
+
+
+//Sliders -->
+for(int sld=0; sld<4;sld++)
+    {
+    slider[sld].data = malloc(H_SLIDER_HEIGHT * H_SLIDER_WIDTH *2);
+    slider[sld].sz_x = H_SLIDER_WIDTH;
+    slider[sld].sz_y = H_SLIDER_HEIGHT;
+    }
+
+//for(int sld=4; sld<8;sld++)
+//    {
+//    slider[sld].data = malloc(V_SLIDER_HEIGHT * V_SLIDER_WIDTH *2);
+//    slider[sld].sz_x = V_SLIDER_WIDTH;
+//    slider[sld].sz_y = V_SLIDER_HEIGHT;
+//    }
+
+for(int bn=0;bn<4;bn++)
+    fill_surface(&slider[bn],rgb565(0x15,0x15,0x00));
+
+
+copy_surface_to_image(&slider[0],50,600);
+copy_surface_to_image(&slider[1],50,700);
+
+
+//---
+
+
+//Frequency display
+
+//freq.data = malloc(H_SLIDER_HEIGHT * H_SLIDER_WIDTH *2);
+//freq.sz_x = FREQ_WIDTH;
+//freq.sz_y = FREQ_HEIGHT;
+
+fill_surface(&freq,rgb565(0x4,0x4,0x08)); 
+copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
+
+
+
+digit_display[0] = '9';
+digit_display[1] = '8';
+digit_display[2] = '7';
+digit_display[3] = '6';
+digit_display[4] = '5';
+digit_display[5] = '4';
+digit_display[6] = '3';
+digit_display[7] = '2';
+digit_display[8] = '1';
+
+plot_freq_digits();
+
 
 
 refresh_screen();
@@ -282,17 +336,8 @@ for(int bn=0;bn<6;bn++)
 //end buttons -----------------------------------    
 */
 
-/*
-digit_display[0] = '9';
-digit_display[1] = '8';
-digit_display[2] = '7';
-digit_display[3] = '6';
-digit_display[4] = '5';
-digit_display[5] = '4';
-digit_display[6] = '3';
-digit_display[7] = '2';
-digit_display[8] = '1';
 
+/*
 plot_freq_digits();
 
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);

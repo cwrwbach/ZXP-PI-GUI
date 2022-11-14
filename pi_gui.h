@@ -49,7 +49,7 @@
 #define FREQ_WIDTH 400
 #define FREQ_HEIGHT 100
 #define FREQ_POS_X 600
-#define FREQ_POS_Y 500
+#define FREQ_POS_Y 600
 
 #define AF_GAIN_WIDTH 400
 #define AF_GAIN_HEIGHT 50
@@ -70,6 +70,13 @@
 #define DEMOD_HEIGHT 300
 #define DEMOD_POS_X 760
 #define DEMOD_POS_Y 400
+
+
+
+#define H_SLIDER_WIDTH 300
+#define H_SLIDER_HEIGHT 50
+//#define V_SLIDER_WIDTH  30
+//#define V_SLIDER_HEIGHT 150    
 
 #define ACTIVE_WIDTH 32
 #define ACTIVE_HEIGHT 140

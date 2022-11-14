@@ -194,11 +194,34 @@ for(int n=0 ; n<thickness;n++)
 
 void plot_button(struct surface  * dest,int x0,int y0,int sz_x, int sz_y,uint16_t backround_col,uint16_t border_col,uint16_t text_col,char text[40])
 {
- fill_surface(dest,backround_col);
+fill_surface(dest,backround_col);
 plot_rectangle(dest,0,0,sz_x,sz_y,border_col);
 plot_large_string(dest,10,20,text,text_col);
-
 }
+
+
+void plot_slider_strip(struct surface  * dest,int x0,int y0,int sz_x, int sz_y,uint16_t backround_col,uint16_t border_col,uint16_t text_col,char text[40])
+{
+fill_surface(dest,backround_col);
+plot_rectangle(dest,0,0,sz_x,sz_y,border_col);
+plot_large_string(dest,10,20,text,text_col);
+}
+
+
+
+
+void plot_slider_body(struct surface  * dest,int x0,int y0,int sz_x, int sz_y,uint16_t backround_col,uint16_t border_col,uint16_t text_col,char text[40])
+{
+fill_surface(dest,backround_col);
+plot_rectangle(dest,0,0,sz_x,sz_y,border_col);
+plot_large_string(dest,10,20,text,text_col);
+}
+
+
+
+
+
+
 
 void plot_small_character(struct surface * dest, int x, int y,uint8_t char_num,uint16_t colour)
 {
