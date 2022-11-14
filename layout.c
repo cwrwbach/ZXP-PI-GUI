@@ -212,15 +212,15 @@ copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
 
 
-digit_display[0] = '9';
-digit_display[1] = '8';
-digit_display[2] = '7';
-digit_display[3] = '6';
+digit_display[0] = '0';
+digit_display[1] = '0';
+digit_display[2] = '0';
+digit_display[3] = '0';
 digit_display[4] = '5';
 digit_display[5] = '4';
-digit_display[6] = '3';
-digit_display[7] = '2';
-digit_display[8] = '1';
+digit_display[6] = '5';
+digit_display[7] = '0';
+digit_display[8] = '0';
 
 plot_freq_digits();
 
