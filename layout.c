@@ -15,7 +15,9 @@
 #define BUTTON_POS_X 1080
 #define BUTTON_POS_Y 10
 
-char digit_display[10];
+char digit_display[16];
+int digit_colour[16];
+
 struct surface button[100];
 struct surface slider[10];
 //---
@@ -36,14 +38,14 @@ plot_large_string(&freq,10, 4, & string ,C_DIM_GRAY);
 
 for(dg=11;dg>8;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],digit_colour[dg]);
     }
 plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);//8
 dg--;
 
 for(;dg>4;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],digit_colour[dg]);
     }
 
 plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
@@ -51,7 +53,7 @@ dg--;
 
 for(;dg>0;dg--,dd++)
     {
-    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],WHITE);
+    plot_huge_numeral(&freq,dg*32,40,digit_display[dd],digit_colour[dg]);
     }
 //dg--;
 //plot_huge_numeral(&freq,dg*32,40,0x3a,WHITE);
@@ -210,17 +212,18 @@ copy_surface_to_image(&slider[1],50,700);
 fill_surface(&freq,rgb565(0x4,0x4,0x08)); 
 copy_surface_to_image(&freq,FREQ_POS_X,FREQ_POS_Y);
 
+for(int c = 0;c<16; c++)
+    digit_colour[c] = WHITE;
 
-
-digit_display[0] = '0';
-digit_display[1] = '0';
-digit_display[2] = '0';
-digit_display[3] = '0';
-digit_display[4] = '5';
-digit_display[5] = '4';
-digit_display[6] = '5';
-digit_display[7] = '0';
-digit_display[8] = '0';
+digit_display[0] = '1';
+digit_display[1] = '1';
+digit_display[2] = '1';
+digit_display[3] = '1';
+digit_display[4] = '1';
+digit_display[5] = '1';
+digit_display[6] = '1';
+digit_display[7] = '1';
+digit_display[8] = '1';
 
 plot_freq_digits();
 

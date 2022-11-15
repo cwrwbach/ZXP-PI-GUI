@@ -4,7 +4,9 @@
 #include <linux/kd.h>
 
 #include "keypad.h"
-
+#include "pi_gui.h"
+#include "tslib.h"
+#include "math.h"
 
 typedef struct input_event EV;
 
@@ -12,6 +14,7 @@ EV ev;
 
 extern int fdk; //keypad
 extern char digit_display[10];
+extern int digit_colour[10];
 
 
 void * keypad_event(void *keypad_thread_id)
@@ -20,6 +23,8 @@ int n;
 int *pstatus;
 int dn;
 char fred;
+
+
 
 dn = 0;
 
@@ -48,6 +53,11 @@ printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
   }
 if(ev.type == 1 && ev.value ==1)
 {
+
+for(int c = 0;c<9; c++)
+    digit_colour[c] = WHITE;
+
+
 switch (ev.code)
     {
 
@@ -79,6 +89,10 @@ case KEY_5 :
 case KEY_4 :
     dn++;
     if(dn >8) dn=8;
+
+    digit_colour[dn] = RED;
+
+
     break;
 
 case KEY_7 :
