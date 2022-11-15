@@ -18,8 +18,10 @@ void * keypad_event(void *keypad_thread_id)
 {
 int n;
 int *pstatus;
-
+int dn;
 char fred;
+
+dn = 0;
 
 while(0 ) //This does not work - as such
     {
@@ -43,40 +45,52 @@ if(n > 0)
 printf(" Data is rxd from the Keypad N: %d \n",n);
 printf(" Data recd: *** %d \n",n);
 printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
-  
-
+  }
+if(ev.type == 1 && ev.value ==1)
+{
 switch (ev.code)
     {
 
     case KEY_0 :
-    digit_display[8] = '0';
+    digit_display[dn] = '0';
     break;
 
 case KEY_1 :
-    digit_display[8] = '1';
+    digit_display[dn] = '1';
     break;
 
 case KEY_2 :
-    digit_display[8] = '2';
+    digit_display[dn] --;
+    if(digit_display[dn] <0x30 ) digit_display[dn] = 0x39;
     break;
+
 case KEY_3 :
     digit_display[8] = '3';
     break;
-case KEY_4 :
-    digit_display[8] = '4';
+case KEY_6 :
+    dn--;
+    if(dn < 0) dn=0;
     break;
+
 case KEY_5 :
     digit_display[8] = '5';
     break;
-case KEY_6 :
-    digit_display[8] = '6';
+
+case KEY_4 :
+    dn++;
+    if(dn >8) dn=8;
     break;
+
 case KEY_7 :
     digit_display[8] = '7';
     break;
+
 case KEY_8 :
-    digit_display[8] = '8';
+    digit_display[dn] ++;
+    if(digit_display[dn] <0x30 ) digit_display[dn] = 0x30;
+
     break;
+
 case KEY_9 :
     digit_display[8] = '9';
 
@@ -94,13 +108,6 @@ plot_freq_digits();
 refresh_screen();
 
     }
-
-
-
-
-
-
-     
 
 
 
