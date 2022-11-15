@@ -259,6 +259,7 @@ for(vert=0,yy=0; vert<50;vert++,yy+=1) //50 rows *4 bytes = 200 bytes per numera
         test_byte = ArialNumFontPlus[bn]; 
         for(horiz =0,xx=0; horiz<8;horiz++,xx++)
             {
+            set_pixel(dest,x+xx+(byt*8),y+yy,BLACK);
             if(test_byte & 0x80) //MSB only
                 { 
                 set_pixel(dest,x+xx+(byt*8),y+yy,colour); 
