@@ -30,17 +30,20 @@
 #define AUDIO_SR 7812
 #define AR_DELTA -10
 
-#define MAX_PAK_LEN 1024+42
-#define PAK_LEN 1024
-#define FFT_HEAD_LEN 16
-//#define AUDIO_HEAD_LEN 18
-#define G711_HEAD_LEN 18
-#define IQ_HEAD_LEN 20
-#define FFT_LEN PAK_LEN+FFT_HEAD_LEN
-//#define AUDIO_LEN PAK_LEN+AUDIO_HEAD_LEN
-#define IQ_LEN PACK_LEN+IQ_HEAD_LEN
+#define PAK_LEN 1280
 
-#define G711_LEN PAK_LEN+G711_HEAD_LEN
+#define HEADER_LEN 256
+//#define AUDIO_HEAD_LEN 18
+#define G711_LEN 1024
+//#define IQ_HEAD_LEN 20
+#define FFT_LEN 1024
+
+//#define AUDIO_LEN PAK_LEN+AUDIO_HEAD_LEN
+//#define IQ_LEN PACK_LEN+IQ_HEAD_LEN
+
+//#define G711_LEN PAK_LEN+G711_HEAD_LEN
+
+
 #define SIGN_BIT (0x80)  /* Sign bit for a A-law byte. */
 #define QUANT_MASK (0xf) /* Quantization field mask. */
 #define SEG_SHIFT (4)    /* Left shift for segment number. */
@@ -68,7 +71,7 @@ int control_packet[32];
 struct sockaddr_in si_other;
 int slen=sizeof(si_other);
 
-char in_pak_buf[MAX_PAK_LEN];
+char in_pak_buf[PAK_LEN];
 char fft_video_buf[FFT_SIZE];
 short g711_xfer_buf[G711_SIZE];
 int status[10];
@@ -123,11 +126,12 @@ int alaw2linear(unsigned char a_val)
 void * do_audio_pak(void)
 {
 int ttt;
+
 while(1)
     {
     usleep(1000);
     if(audio_flag ==true)
-        { //printf(" *\n");
+        {// printf(" *\n");
         audio_flag = false;
         int snd_err = snd_pcm_writei(audio_device, g711_xfer_buf, 1024);	
         if(snd_err < 0 )
@@ -149,37 +153,39 @@ float audio;
 int rbi;
 static int local_count;
 int rxd_count;
+char id_type;
+char temp_audio[1024];
    
 //get incoming samples from stream 
 while(1) 
     {
-    rxd_pak_len=recv(sock_fd, in_pak_buf ,MAX_PAK_LEN ,0); //CPX_DATA_SIZE
+    rxd_pak_len=recv(sock_fd, in_pak_buf ,PAK_LEN ,0); //CPX_DATA_SIZE
+    id_type = in_pak_buf[0];//simple type for now
 
-    switch(rxd_pak_len)
+    if(id_type ==0x42) //needs defining in new header structure
+    
         {
-        case FFT_LEN:
-
         for(int i=0; i<1024;i++)
-            fft_video_buf[i] = in_pak_buf[i];
+            fft_video_buf[i] = in_pak_buf[i+HEADER_LEN];
   
         stream_flag = true; //if I don't flag the FFT the CPU usage becomes 100% FIXME
-        break;
-           
-        case G711_LEN:
+        }
+ // usleep(1000);         
+    if(id_type == 0x69)
+
+        { //needs defining in new header structure
+        for(int i=0 ;i<1024;i++)
+            temp_audio[i] = in_pak_buf[i+ HEADER_LEN];
 
         for(int i=0 ;i<1024;i++)
             {
-            g711_xfer_buf[i] = alaw2linear(in_pak_buf[i]);
-
+            g711_xfer_buf[i] = alaw2linear(temp_audio[i]);
+//printf(" t: 0x%x",temp_audio);
             }
-
+//printf(" %d 0x%x \n",__LINE__,in_pak_buf[513]);
         audio_flag = true;
-        break;
-            
-        default:
-        break;
         }
-
+            
     usleep(1000);
     }
 }

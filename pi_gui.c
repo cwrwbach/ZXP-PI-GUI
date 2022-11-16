@@ -306,6 +306,9 @@ while(quit)
 
 update_pitaya_cf(5505000); //stay alive
 
+update_pitaya_rfg(20);
+update_pitaya_afg(20);
+update_pitaya_demod(2);
     }
 }
 
