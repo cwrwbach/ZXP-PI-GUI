@@ -73,8 +73,8 @@
 
 
 
-#define H_SLIDER_WIDTH 300
-#define H_SLIDER_HEIGHT 50
+#define H_SLIDER_WIDTH 200
+#define H_SLIDER_HEIGHT 40
 //#define V_SLIDER_WIDTH  30
 //#define V_SLIDER_HEIGHT 150    
 

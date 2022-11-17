@@ -13,7 +13,7 @@
 #define BUTTON_WIDTH 70
 #define BUTTON_HEIGHT 50
 #define BUTTON_POS_X 1080
-#define BUTTON_POS_Y 10
+#define BUTTON_POS_Y 30
 
 char digit_display[16];
 int digit_colour[16];
@@ -176,7 +176,6 @@ copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
 
 //---
 
-
 //Sliders -->
 for(int sld=0; sld<4;sld++)
     {
@@ -185,19 +184,15 @@ for(int sld=0; sld<4;sld++)
     slider[sld].sz_y = H_SLIDER_HEIGHT;
     }
 
-//for(int sld=4; sld<8;sld++)
-//    {
-//    slider[sld].data = malloc(V_SLIDER_HEIGHT * V_SLIDER_WIDTH *2);
-//    slider[sld].sz_x = V_SLIDER_WIDTH;
-//    slider[sld].sz_y = V_SLIDER_HEIGHT;
-//    }
-
 for(int bn=0;bn<4;bn++)
-    fill_surface(&slider[bn],rgb565(0x15,0x15,0x00));
+    fill_surface(&slider[bn],rgb565(0x2,0x02,0x00));
 
-
+plot_rectangle(&slider[0],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
 copy_surface_to_image(&slider[0],50,600);
-copy_surface_to_image(&slider[1],50,700);
+
+plot_rectangle(&slider[1],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
+copy_surface_to_image(&slider[0],50,700);
+
 
 
 //---
@@ -231,7 +226,48 @@ plot_freq_digits();
 
 refresh_screen();
 
+
+
+for(int x=0;x<4;x++)
+    {
+set_slider_value(0,120);
+set_slider_value(1,17);
+refresh_screen();
+sleep(1);
+
+set_slider_value(0,40);
+set_slider_value(1,50);
+refresh_screen();
+sleep(1);
+
+set_slider_value(0,180);
+set_slider_value(1,15);
+
+
+
+refresh_screen();
+
+sleep(1);
+    }
+
+
+
+
 } //make layout
+
+
+set_slider_value(int index,int value)
+{
+int thick;
+fill_surface(&slider[index],rgb565(0x2,0x02,0x00));
+plot_rectangle(&slider[index],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
+
+for(thick = 0;thick <11;thick++)
+   {
+    plot_line(&slider[index],2,4+(thick*3),value,4+(thick*3),RED);
+    }
+    copy_surface_to_image(&slider[index],50,600+(index*100)); //FIXME
+}
 
 
 
