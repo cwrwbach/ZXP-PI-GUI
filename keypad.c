@@ -28,15 +28,15 @@ char fred;
 
 dn = 0;
 
-while(0 ) //This does not work - as such
-    {
-    fred = 0x0f;
-    ioctl (fdk, NULL, KDSETLED, fred);
-    usleep(500000);
-    fred = 0x00;
-    ioctl (fdk, NULL, KDSETLED, fred);
-    usleep(500000);
-    }
+//while(0 ) //This does not work - as such
+//    {
+//    fred = 0x0f;
+//    ioctl (fdk, 0, KDSETLED, fred);
+//    usleep(500000);
+//    fred = 0x00;
+//    ioctl (fdk, 0, KDSETLED, fred);
+//    usleep(500000);
+//    }
 
 
 while(1)

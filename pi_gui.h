@@ -72,9 +72,19 @@
 #define DEMOD_POS_Y 400
 
 
+#define BTN_WIDTH 70
+#define BTN_HEIGHT 50
+#define BTN_X_SPACE 100
+#define BTN_Y_SPACE 75
+#define BTN_POS_X 1080
+#define BTN_POS_Y 30
 
 #define SLDR_WIDTH 200
 #define SLDR_HEIGHT 40
+#define SLDR_POS_X 50
+#define SLDR_POS_Y 600
+#define SLDR_X_SPACE 0
+#define SLDR_Y_SPACE 100
 
 
 #define ACTIVE_WIDTH 32

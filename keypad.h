@@ -21,5 +21,5 @@
 #define PAD_DEL 83
 #define PAD_NUMLOCK 69
 
-
+void plot_freq_digits();
 void * keypad_event(void *keypad_thread_id);

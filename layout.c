@@ -4,18 +4,13 @@
 #include <stdio.h>
 #include <signal.h>
 #include <pthread.h>
+#include <locale.h>
+
 #include "pi_gui.h"
 #include "tslib.h"
 #include "math.h"
-#include <locale.h>
 
 
-#define BTN_WIDTH 70
-#define BTN_HEIGHT 50
-#define BTN_X_SPACE 100
-#define BTN_Y_SPACE 75
-#define BTN_POS_X 1080
-#define BTN_POS_Y 30
 
 char digit_display[16];
 int digit_colour[16];
@@ -29,14 +24,30 @@ void set_active_digit(int d_act)
 
 }
 
+
+void set_slider_value(int index,int value)
+{
+int thick;
+fill_surface(&slider[index],rgb565(0x2,0x02,0x00));
+plot_rectangle(&slider[index],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
+
+for(thick = 0;thick <11;thick++)
+   {
+    plot_line(&slider[index],2,4+(thick*3),value,4+(thick*3),RED);
+    }
+    copy_surface_to_image(&slider[index],50,600+(index*100)); //FIXME
+}
+
+
+
 void plot_freq_digits()
 {
 int dg,dd;
 dd=0;
 
-char string[50] = "    MHz     KHz      Hz";
+uint8_t string[50] = "    MHz     KHz      Hz";
 
-plot_large_string(&freq,10, 4, & string ,C_DIM_GRAY);
+plot_large_string(&freq,10, 4,string ,C_DIM_GRAY);
 
 for(dg=11;dg>8;dg--,dd++)
     {
@@ -168,7 +179,7 @@ for(int bn=12;bn<22;bn++)
 bb=0;
 for(int bn=12;bn<22;bn++,bb++)
     {
-    copy_surface_to_image(&btn[bn],BTN_POS_X+BTN_X_SPACE,BTN_POS_Y+ (bb *BTN_Y_SPACE));
+    copy_surface_to_image(&btn[bn],BTN_POS_X+BTN_X_SPACE,BTN_POS_Y+(bb *BTN_Y_SPACE));
     }
 
 //change colour of one btn as test
@@ -190,10 +201,10 @@ for(int bn=0;bn<4;bn++)
     fill_surface(&slider[bn],rgb565(0x2,0x02,0x00));
 
 plot_rectangle(&slider[0],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
-copy_surface_to_image(&slider[0],50,600);
+copy_surface_to_image(&slider[0],SLDR_POS_X,SLDR_POS_Y);
 
 plot_rectangle(&slider[1],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
-copy_surface_to_image(&slider[0],50,700);
+copy_surface_to_image(&slider[0],SLDR_POS_X,SLDR_POS_Y+SLDR_Y_SPACE);
 
 
 
@@ -229,7 +240,8 @@ plot_freq_digits();
 refresh_screen();
 
 
-
+if(0)
+{
 for(int x=0;x<4;x++)
     {
 set_slider_value(0,120);
@@ -251,25 +263,12 @@ refresh_screen();
 
 sleep(1);
     }
-
+}
 
 
 
 } //make layout
 
-
-set_slider_value(int index,int value)
-{
-int thick;
-fill_surface(&slider[index],rgb565(0x2,0x02,0x00));
-plot_rectangle(&slider[index],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
-
-for(thick = 0;thick <11;thick++)
-   {
-    plot_line(&slider[index],2,4+(thick*3),value,4+(thick*3),RED);
-    }
-    copy_surface_to_image(&slider[index],50,600+(index*100)); //FIXME
-}
 
 
 
