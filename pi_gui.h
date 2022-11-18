@@ -73,10 +73,9 @@
 
 
 
-#define H_SLIDER_WIDTH 200
-#define H_SLIDER_HEIGHT 40
-//#define V_SLIDER_WIDTH  30
-//#define V_SLIDER_HEIGHT 150    
+#define SLDR_WIDTH 200
+#define SLDR_HEIGHT 40
+
 
 #define ACTIVE_WIDTH 32
 #define ACTIVE_HEIGHT 140

@@ -10,15 +10,17 @@
 #include <locale.h>
 
 
-#define BUTTON_WIDTH 70
-#define BUTTON_HEIGHT 50
-#define BUTTON_POS_X 1080
-#define BUTTON_POS_Y 30
+#define BTN_WIDTH 70
+#define BTN_HEIGHT 50
+#define BTN_X_SPACE 100
+#define BTN_Y_SPACE 75
+#define BTN_POS_X 1080
+#define BTN_POS_Y 30
 
 char digit_display[16];
 int digit_colour[16];
 
-struct surface button[100];
+struct surface btn[100];
 struct surface slider[10];
 //---
 
@@ -134,63 +136,63 @@ rf_gain.sz_x=RF_GAIN_WIDTH;
 rf_gain.sz_y = RF_GAIN_HEIGHT;
 
 
-//Make two columns of buttons
+//Make two columns of btns
 //first 10
 for(int bn=0; bn<10;bn++)
     {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
+    btn[bn].data = malloc(BTN_WIDTH * BTN_HEIGHT *2);
+    btn[bn].sz_x = BTN_WIDTH;
+    btn[bn].sz_y = BTN_HEIGHT;
     }
 
 for(int bn=0;bn<10;bn++)
-    fill_surface(&button[bn],rgb565(0x04,15,0x06));
+    fill_surface(&btn[bn],rgb565(0x04,15,0x06));
 
 bb=0;
 for(int bn=0;bn<10;bn++,bb++)
     {
-    copy_surface_to_image(&button[bn],BUTTON_POS_X,BUTTON_POS_Y+ (bb *75));
+    copy_surface_to_image(&btn[bn],BTN_POS_X,BTN_POS_Y+ (bb *BTN_Y_SPACE));
     }
 
 //Second 10 to right
 for(int bn=12; bn<22;bn++)
     {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
+    btn[bn].data = malloc(BTN_WIDTH * BTN_HEIGHT *2);
+    btn[bn].sz_x = BTN_WIDTH;
+    btn[bn].sz_y = BTN_HEIGHT;
     }
 
 for(int bn=12;bn<22;bn++)
-    fill_surface(&button[bn],rgb565(0x04,0x15,0x03));
+    fill_surface(&btn[bn],rgb565(0x04,0x15,0x03));
 
 bb=0;
 for(int bn=12;bn<22;bn++,bb++)
     {
-    copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
+    copy_surface_to_image(&btn[bn],BTN_POS_X+BTN_X_SPACE,BTN_POS_Y+ (bb *BTN_Y_SPACE));
     }
 
-//change colour of one button
+//change colour of one btn as test
 bn=4;bb=4; 
-fill_surface(&button[bn],rgb565(0x10,0x00,0x10));
-copy_surface_to_image(&button[bn],BUTTON_POS_X+100,BUTTON_POS_Y+ (bb *75));
+fill_surface(&btn[bn],rgb565(0x10,0x00,0x10));
+copy_surface_to_image(&btn[bn],BTN_POS_X+100,BTN_POS_Y+ (bb *75));
 
 //---
 
 //Sliders -->
 for(int sld=0; sld<4;sld++)
     {
-    slider[sld].data = malloc(H_SLIDER_HEIGHT * H_SLIDER_WIDTH *2);
-    slider[sld].sz_x = H_SLIDER_WIDTH;
-    slider[sld].sz_y = H_SLIDER_HEIGHT;
+    slider[sld].data = malloc(SLDR_HEIGHT * SLDR_WIDTH *2);
+    slider[sld].sz_x = SLDR_WIDTH;
+    slider[sld].sz_y = SLDR_HEIGHT;
     }
 
 for(int bn=0;bn<4;bn++)
     fill_surface(&slider[bn],rgb565(0x2,0x02,0x00));
 
-plot_rectangle(&slider[0],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
+plot_rectangle(&slider[0],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
 copy_surface_to_image(&slider[0],50,600);
 
-plot_rectangle(&slider[1],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
+plot_rectangle(&slider[1],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
 copy_surface_to_image(&slider[0],50,700);
 
 
@@ -200,7 +202,7 @@ copy_surface_to_image(&slider[0],50,700);
 
 //Frequency display
 
-//freq.data = malloc(H_SLIDER_HEIGHT * H_SLIDER_WIDTH *2);
+//freq.data = malloc(SLDR_HEIGHT * SLDR_WIDTH *2);
 //freq.sz_x = FREQ_WIDTH;
 //freq.sz_y = FREQ_HEIGHT;
 
@@ -260,7 +262,7 @@ set_slider_value(int index,int value)
 {
 int thick;
 fill_surface(&slider[index],rgb565(0x2,0x02,0x00));
-plot_rectangle(&slider[index],2,2,H_SLIDER_WIDTH-1,H_SLIDER_HEIGHT-2,BLUE);
+plot_rectangle(&slider[index],2,2,SLDR_WIDTH-1,SLDR_HEIGHT-2,BLUE);
 
 for(thick = 0;thick <11;thick++)
    {
@@ -280,28 +282,28 @@ for(thick = 0;thick <11;thick++)
 
 
 /*
-//Make buttons -----------------------------------
+//Make btns -----------------------------------
 for(int bn=0;bn<16;bn++)
     {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
+    btn[bn].data = malloc(BTN_WIDTH * BTN_HEIGHT *2);
+    btn[bn].sz_x = BTN_WIDTH;
+    btn[bn].sz_y = BTN_HEIGHT;
     }
 
-plot_large_string(&button[0],10,20,"ALPHA",WHITE);
-plot_large_string(&button[1],10,20,"BRAVO",WHITE);
-plot_large_string(&button[2],10,15,"CHARLY",WHITE);
-plot_large_string(&button[3],10,30,"DELTA",WHITE);
+plot_large_string(&btn[0],10,20,"ALPHA",WHITE);
+plot_large_string(&btn[1],10,20,"BRAVO",WHITE);
+plot_large_string(&btn[2],10,15,"CHARLY",WHITE);
+plot_large_string(&btn[3],10,30,"DELTA",WHITE);
 
 for(int bn=0;bn<4;bn++)
     {
-  copy_surface_to_image(&button[bn],BUTTON_POS_X+1160,BUTTON_POS_Y+(bn*BUTTON_WIDTH)+20*bn);
-    plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
+  copy_surface_to_image(&btn[bn],BTN_POS_X+1160,BTN_POS_Y+(bn*BTN_WIDTH)+20*bn);
+    plot_rectangle(&btn[bn],BTN_POS_X,BTN_POS_Y,BTN_WIDTH,BTN_HEIGHT,YELLOW);
     }
  
 for(int bn=0;bn<6;bn++)
-    fill_surface(&button[bn],rgb565(0x06,0x0,0x06));
-//end buttons -----------------------------------    
+    fill_surface(&btn[bn],rgb565(0x06,0x0,0x06));
+//end btns -----------------------------------    
 
 */
 
@@ -351,28 +353,28 @@ plot_huge_numeral(&freq,320,40,'0',WHITE);
 plot_huge_numeral(&freq,352,40,'0',WHITE);
 */
 /*
-//Make buttons -----------------------------------
+//Make btns -----------------------------------
 for(int bn=0;bn<16;bn++)
     {
-    button[bn].data = malloc(BUTTON_WIDTH * BUTTON_HEIGHT *2);
-    button[bn].sz_x = BUTTON_WIDTH;
-    button[bn].sz_y = BUTTON_HEIGHT;
+    btn[bn].data = malloc(BTN_WIDTH * BTN_HEIGHT *2);
+    btn[bn].sz_x = BTN_WIDTH;
+    btn[bn].sz_y = BTN_HEIGHT;
     }
 
-plot_large_string(&button[0],10,20,"AM",WHITE);
-plot_large_string(&button[1],10,20,"USB",WHITE);
-plot_large_string(&button[2],10,15,"LSB",WHITE);
-plot_large_string(&button[3],10,30,"DSB",WHITE);
+plot_large_string(&btn[0],10,20,"AM",WHITE);
+plot_large_string(&btn[1],10,20,"USB",WHITE);
+plot_large_string(&btn[2],10,15,"LSB",WHITE);
+plot_large_string(&btn[3],10,30,"DSB",WHITE);
 
 for(int bn=0;bn<4;bn++)
     {
-  copy_surface_to_image(&button[bn],BUTTON_POS_X+1160,BUTTON_POS_Y+(bn*BUTTON_WIDTH)+20*bn);
-    plot_rectangle(&button[bn],BUTTON_POS_X,BUTTON_POS_Y,BUTTON_WIDTH,BUTTON_HEIGHT,YELLOW);
+  copy_surface_to_image(&btn[bn],BTN_POS_X+1160,BTN_POS_Y+(bn*BTN_WIDTH)+20*bn);
+    plot_rectangle(&btn[bn],BTN_POS_X,BTN_POS_Y,BTN_WIDTH,BTN_HEIGHT,YELLOW);
     }
  
 for(int bn=0;bn<6;bn++)
-    fill_surface(&button[bn],rgb565(0x06,0x0,0x06));
-//end buttons -----------------------------------    
+    fill_surface(&btn[bn],rgb565(0x06,0x0,0x06));
+//end btns -----------------------------------    
 */
 
 

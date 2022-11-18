@@ -61,32 +61,32 @@ for(int c = 0;c<9; c++)
 switch (ev.code)
     {
 
-    case KEY_0 :
+    case PAD_0 :
     digit_display[dn] = '0';
     break;
 
-case KEY_1 :
+case PAD_1 :
     digit_display[dn] = '1';
     break;
 
-case KEY_2 :
+case PAD_2 :
     digit_display[dn] --;
     if(digit_display[dn] <0x30 ) digit_display[dn] = 0x39;
     break;
 
-case KEY_3 :
+case PAD_3 :
     digit_display[8] = '3';
     break;
-case KEY_6 :
+case PAD_6 :
     dn--;
     if(dn < 0) dn=0;
     break;
 
-case KEY_5 :
+case PAD_5 :
     digit_display[8] = '5';
     break;
 
-case KEY_4 :
+case PAD_4 :
     dn++;
     if(dn >8) dn=8;
 
@@ -95,17 +95,17 @@ case KEY_4 :
 
     break;
 
-case KEY_7 :
+case PAD_7 :
     digit_display[8] = '7';
     break;
 
-case KEY_8 :
+case PAD_8 :
     digit_display[dn] ++;
     if(digit_display[dn] <0x30 ) digit_display[dn] = 0x30;
 
     break;
 
-case KEY_9 :
+case PAD_9 :
     digit_display[8] = '9';
 
     break;
