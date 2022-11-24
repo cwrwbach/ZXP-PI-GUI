@@ -13,9 +13,9 @@
 #include "fb2-lib.h"
 #include "network.c"
 #include "waterfall.h"
-#include "keypad.h"
+#include "hid.h"
 
-#define SAMPLE_AMOUNT 2
+
 
 int xres,yres,x;
 int Xsamples[20];
@@ -30,11 +30,11 @@ int h;
 int sample;
 int fd;
 
-int fds; //shuttle
+
 int fdk; //keypad
 int fdt; //Touch
 int n, shuttle;
-char dev_name[256];
+//char dev_name[256];
 typedef struct input_event EV;
 
 char waterfall_buffer[1024][3];
@@ -57,142 +57,7 @@ static void sig(int sig)
 }
 //---
 
-int openTouchScreen()
-{
-strcpy(dev_name,"/dev/input/by-id/usb-eGalax_Inc._USB_TouchController-event-if00");
-fds = open(dev_name, O_RDONLY| O_NONBLOCK);
-        if ((fd = open(dev_name, O_RDONLY)) < 0) 
 
-        {
-            printf("Touchscrren failed\n");        
-                return 1;
-        }
-
-//FIXME
-getTouchScreenDetails(&screenXmin,&screenXmax,&screenYmin,&screenYmax);
-xres = 1280 ;//screenXmax - screenXmin;
-yres = 800; //screenYmax; // - screenYmin;
-	
-scaleXvalue = ((float)screenXmax-screenXmin) / xres;
-printf ("X Scale Factor = %f   %d %d %d \n", scaleXvalue,screenXmax,screenXmin,xres);
-	
-scaleYvalue = ((float)screenYmax-screenYmin) / yres;
-printf ("Y Scale Factor = %f\n", scaleYvalue);
-}
-
-int open_shuttle()
-{
-int xx;
-printf(" Hello shuttle open \n");
-
-//open the shuttleXpress device
-strcpy(dev_name,"/dev/input/by-id/usb-Contour_Design_ShuttleXpress-event-if00");
-fds = open(dev_name, O_RDONLY| O_NONBLOCK);
-if (fds < 0) 
-	{
-	printf(" Failed to open shuttle device\n");
-	return -1;
-    }            
-// Flag it as exclusive access
-if(ioctl( fds, EVIOCGRAB, 1 ) < 0) 
-	{
-    printf( "evgrab ioctl\n" );
-	return 0;
-    }
-
-// if we get to here, we're connected to shuttleXpress
-printf("Shuttle device connected. dv: %d\n",fds);
-return 0;
-}
-
-int open_keypad()
-{
-int xx;
-printf(" Hello Keypad open \n");
-
-//open the keypad device
-//strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-if01");
-strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-kbd");
-
-//usb-SEM_HCT_Keyboard-event-if01
-//usb-SEM_HCT_Keyboard-event-kbd
-
-
-fdk = open(dev_name, O_RDONLY| O_NONBLOCK);
-if (fdk < 0) 
-	{
-	printf(" Failed to open keypad device\n");
-	return -1;
-    }            
-// Flag it as exclusive access
-if(ioctl( fdk, EVIOCGRAB, 1 ) < 0) 
-	{
-    printf( "evgrab not exclusive ioctl\n" );
-	return -2;
-    }
-
-// if we get to here, we're connected to 
-printf("Keypad device connected. dv: %d\n",fdk);
-return 0;
-}
-
-
-
-
-
-
-
-void * shuttle_event(void *shuttle_thread_id)
-{
-int n;
-
-while(1)
-    {
-    usleep(10000); //anti cpu hogger
-    n=read(fds,&ev,sizeof (ev));
-    if(n > 0)
-	    {
-    printf(" Data is rxd from the Shuttle N: %d \n",n);
-    printf(" Data recd: *** %d \n",n);
-    printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
-	    }
-    }
-}
-
-
-
-
-void * touchscreen_event(void *thread_id)
-{
-
-while(1)
-    { 
-    usleep(10000); //anti cpu hogger
-
-	for (sample = 0; sample < SAMPLE_AMOUNT; sample++)
-        {
-		getTouchSample(&rawX, &rawY, &rawPressure);
-		Xsamples[sample] = rawX;
-    	Ysamples[sample] = rawY;
-		}
-
-		Xaverage  = 0;
-		Yaverage  = 0;
-
-	for ( x = 0; x < SAMPLE_AMOUNT; x++ )
-        {
-		Xaverage += Xsamples[x];
-		Yaverage += Ysamples[x];
-		}
-
-	Xaverage = Xaverage/SAMPLE_AMOUNT;
-	Yaverage = Yaverage/SAMPLE_AMOUNT;
-
-	scaledX = 	Xaverage / scaleXvalue;
-	scaledY = 	Yaverage / scaleYvalue;
-	printf(" X=%d =%d \n",scaledX,scaledY);
-	}
-}
 
 //---
 
@@ -342,11 +207,11 @@ printf("Display info %dx%d, %d bpp\n", vinfo.xres, vinfo.yres, vinfo.bits_per_pi
 //openTouchScreen();
 //pthread_create(&thread_id, NULL, touchscreen_event, NULL);
 
-err = open_shuttle();
-    pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
+//err = open_shuttle();
+//    pthread_create(&shuttle_thread_id, NULL, shuttle_event, NULL);
 
-err = open_keypad();
-    pthread_create(&keypad_thread_id, NULL, keypad_event, NULL);
+//err = open_keypad();
+//    pthread_create(&keypad_thread_id, NULL, keypad_event, NULL);
 
 
 screenbytes = finfo.smem_len;

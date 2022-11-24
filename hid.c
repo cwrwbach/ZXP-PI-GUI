@@ -3,7 +3,7 @@
 #include <sys/ioctl.h>
 #include <linux/kd.h>
 
-#include "keypad.h"
+#include "hid.h"
 #include "pi_gui.h"
 #include "tslib.h"
 #include "math.h"
@@ -11,10 +11,13 @@
 typedef struct input_event EV;
 
 EV ev;
+int fds;
+
 
 extern int fdk; //keypad
 extern char digit_display[10];
 extern int digit_colour[10];
+
 
 
 void * keypad_event(void *keypad_thread_id)
@@ -138,3 +141,84 @@ refresh_screen();
 }
 
 
+int open_keypad()
+{
+char dev_name[256];
+int xx;
+printf(" Hello Keypad open \n");
+
+//open the keypad device
+//strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-if01");
+strcpy(dev_name,"/dev/input/by-id/usb-SEM_HCT_Keyboard-event-kbd");
+
+//usb-SEM_HCT_Keyboard-event-if01
+//usb-SEM_HCT_Keyboard-event-kbd
+
+
+fdk = open(dev_name, O_RDONLY| O_NONBLOCK);
+if (fdk < 0) 
+	{
+	printf(" Failed to open keypad device\n");
+	return -1;
+    }            
+// Flag it as exclusive access
+if(ioctl( fdk, EVIOCGRAB, 1 ) < 0) 
+	{
+    printf( "evgrab not exclusive ioctl\n" );
+	return -2;
+    }
+
+// if we get to here, we're connected to 
+printf("Keypad device connected. dv: %d\n",fdk);
+return 0;
+}
+
+//---
+
+
+
+void * shuttle_event(void *shuttle_thread_id)
+{
+int n;
+
+while(1)
+    {
+    usleep(10000); //anti cpu hogger
+    n=read(fds,&ev,sizeof (ev));
+    if(n > 0)
+	    {
+    printf(" Data is rxd from the Shuttle N: %d \n",n);
+    printf(" Data recd: *** %d \n",n);
+    printf(" Type: %d Code: %d  Value: %d \n\n",ev.type,ev.code,ev.value);
+	    }
+    }
+}
+
+
+
+
+int open_shuttle()
+{
+char dev_name[256];
+int xx;
+printf(" Hello shuttle open \n");
+
+//open the shuttleXpress device
+strcpy(dev_name,"/dev/input/by-id/usb-Contour_Design_ShuttleXpress-event-if00");
+fds = open(dev_name, O_RDONLY| O_NONBLOCK);
+if (fds < 0) 
+	{
+	printf(" Failed to open shuttle device\n");
+	return -1;
+    }            
+// Flag it as exclusive access
+if(ioctl( fds, EVIOCGRAB, 1 ) < 0) 
+	{
+    printf( "evgrab ioctl\n" );
+	return 0;
+    }
+
+// if we get to here, we're connected to shuttleXpress
+printf("Shuttle device connected. dv: %d\n",fds);
+return 0;
+}

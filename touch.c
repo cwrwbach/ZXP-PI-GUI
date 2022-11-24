@@ -12,8 +12,10 @@
 
 #define KWHT  "\x1B[37m"
 #define KYEL  "\x1B[33m"
+#define SAMPLE_AMOUNT 2
 
 
+int fds; //shuttle
 
 
 extern int  xres,yres,x;
@@ -151,5 +153,74 @@ void getVeboseTouchSample(int *rawX, int *rawY, int *rawPressure)
 			*rawPressure = ev[i].value;
 		}
 
+	}
+}
+
+
+int openTouchScreen()
+{
+char dev_name[256];
+strcpy(dev_name,"/dev/input/by-id/usb-eGalax_Inc._USB_TouchController-event-if00");
+fds = open(dev_name, O_RDONLY| O_NONBLOCK);
+        if ((fd = open(dev_name, O_RDONLY)) < 0) 
+
+        {
+            printf("Touchscrren failed\n");        
+                return 1;
+        }
+
+//FIXME
+getTouchScreenDetails(&screenXmin,&screenXmax,&screenYmin,&screenYmax);
+xres = 1280 ;//screenXmax - screenXmin;
+yres = 800; //screenYmax; // - screenYmin;
+	
+scaleXvalue = ((float)screenXmax-screenXmin) / xres;
+printf ("X Scale Factor = %f   %d %d %d \n", scaleXvalue,screenXmax,screenXmin,xres);
+	
+scaleYvalue = ((float)screenYmax-screenYmin) / yres;
+printf ("Y Scale Factor = %f\n", scaleYvalue);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+void * touchscreen_event(void *thread_id)
+{
+
+while(1)
+    { 
+    usleep(10000); //anti cpu hogger
+
+	for (sample = 0; sample < SAMPLE_AMOUNT; sample++)
+        {
+		getTouchSample(&rawX, &rawY, &rawPressure);
+		Xsamples[sample] = rawX;
+    	Ysamples[sample] = rawY;
+		}
+
+		Xaverage  = 0;
+		Yaverage  = 0;
+
+	for ( x = 0; x < SAMPLE_AMOUNT; x++ )
+        {
+		Xaverage += Xsamples[x];
+		Yaverage += Ysamples[x];
+		}
+
+	Xaverage = Xaverage/SAMPLE_AMOUNT;
+	Yaverage = Yaverage/SAMPLE_AMOUNT;
+
+	scaledX = 	Xaverage / scaleXvalue;
+	scaledY = 	Yaverage / scaleYvalue;
+	printf(" X=%d =%d \n",scaledX,scaledY);
 	}
 }
